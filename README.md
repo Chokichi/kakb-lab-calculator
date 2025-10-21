@@ -1,100 +1,167 @@
 # Ka/Kb Lab Calculator
 
-A web application for students to check their work in the "Determination of Ka and Kb Lab". Students can enter their calculated values and the app will validate them against expected calculations without revealing the answers.
+An interactive web application designed to help students check their work for the "Determination of Ka and Kb Lab". Students can enter their measured pH values and calculated concentrations, and the app provides real-time validation feedback without revealing the correct answers.
 
-## Features
+## 🎯 Features
 
-- **Real-time Validation**: Enter values and get immediate feedback on accuracy
-- **Tolerance Control**: Adjustable tolerance percentage for validation (default 10%)
-- **Visual Feedback**: Green checkmarks for correct values, red X's for incorrect ones
-- **Progress Tracking**: Summary panel shows completion and accuracy statistics
-- **Responsive Design**: Works on desktop and mobile devices
-- **CSV Support**: Load custom calculation data from CSV files
+### Interactive Lab Calculator
+- **Dual Trial Support**: Separate input fields for Trial 1 and Trial 2
+- **Section-based Organization**: Each lab section has its own "Check Work" button
+- **Real-time Validation**: 2-3 second calculation delay with spinning animation
+- **Smart Feedback System**:
+  - ✅ **Correct** (within 10% tolerance)
+  - ⚠️ **Close** (10-15% error) - Yellow warning
+  - ❌ **Incorrect** (>15% error)
 
-## Getting Started
+### User Experience
+- **Check Work Buttons**: Students must actively request validation for each section
+- **Empty Box Handling**: Only validates non-empty input fields
+- **Scientific Notation Support**: Accepts values like 1.0E-3 for 0.001
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+
+### Data Management
+- **CSV-based Configuration**: Easy to update lab data via CSV files
+- **Multiple Lab Sections**:
+  - The equilibrium constant of acetic acid
+  - Keq of an unknown weak acid
+  - The equilibrium constant of a weak base
+
+## 🛠️ Technical Stack
+
+- **Frontend**: React 18 + TypeScript + Vite
+- **State Management**: Zustand
+- **Styling**: CSS with modern gradients and animations
+- **Data Processing**: Custom CSV parser
+- **Validation**: Tolerance-based comparison logic
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js (version 16 or higher)
 - npm or yarn
 
 ### Installation
 
-1. Clone or download this repository
-2. Navigate to the project directory
-3. Install dependencies:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/jkawagoe/kakb-lab-calculator.git
+   cd kakb-lab-calculator
+   ```
 
-```bash
-npm install
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Running the Application
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-Start the development server:
+4. **Open your browser**
+   Navigate to `http://localhost:5173` (or the port shown in terminal)
 
-```bash
-npm run dev
-```
-
-Open your browser and navigate to `http://localhost:5173`
-
-### Building for Production
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist` directory.
-
-## How to Use
-
-1. **Load Data**: The app will automatically load the default lab data, or you can load a custom CSV file
-2. **Enter Values**: Input your calculated values in the appropriate fields
-3. **Check Results**: The app will validate your values in real-time:
-   - ✅ Green background: Value is within tolerance
-   - ❌ Red background: Value is outside tolerance
-   - No indicator: No value entered yet
-4. **Adjust Tolerance**: Use the slider in the summary panel to change the acceptable error margin
-5. **Reset**: Click "Reset All" to clear all entered values
-
-## Data Format
-
-The app expects CSV data with the following structure:
-- Column A: Calculation labels
-- Column B: Trial 1 values or formulas
-- Column C: Trial 2 values or formulas  
-- Column D: Units
-
-Formulas should use Excel-style syntax (e.g., `=10^-B4` for 10^(-pH))
-
-## Technical Details
-
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **State Management**: Zustand
-- **Formula Engine**: Math.js
-- **Styling**: CSS with responsive design
-
-## Development
-
-### Project Structure
+## 📁 Project Structure
 
 ```
-src/
-├── components/          # React components
-├── store/              # Zustand store
-├── utils/              # Utility functions
-├── types.ts            # TypeScript type definitions
-└── App.tsx             # Main application component
+kakb-lab-calculator/
+├── src/
+│   ├── components/          # React components
+│   │   ├── CalculatorGrid.tsx    # Main grid layout
+│   │   ├── CalculatorRow.tsx     # Individual row component
+│   │   ├── CheckWorkButton.tsx   # Check work button with spinner
+│   │   ├── FileLoader.tsx        # CSV file upload (unused)
+│   │   └── SummaryPanel.tsx      # Progress summary
+│   ├── store/
+│   │   └── calculatorStore.ts    # Zustand state management
+│   ├── utils/
+│   │   ├── csvParser.ts          # CSV data parsing
+│   │   └── formulaEngine.ts      # Formula evaluation (legacy)
+│   ├── types.ts                  # TypeScript definitions
+│   ├── App.tsx                   # Main application component
+│   └── main.tsx                  # Application entry point
+├── public/
+│   └── KaKb Key Calculator Labels.csv  # Lab data
+├── Excel Logic/               # Original Excel formulas and data
+└── README.md
 ```
 
-### Key Components
+## 🎮 How to Use
 
-- **CalculatorGrid**: Displays all calculation rows organized by section
-- **CalculatorRow**: Individual row with input field and validation status
-- **SummaryPanel**: Progress tracking and tolerance controls
-- **FileLoader**: CSV file loading interface
+### For Students
+1. **Enter Values**: Input your measured pH values and calculated concentrations
+2. **Check Work**: Click the "Check Work" button for each section
+3. **Wait for Results**: The app will show "Calculating..." for 2-3 seconds
+4. **Review Feedback**: See ✅, ⚠️, or ❌ indicators for each value
+5. **Reset if Needed**: Click "Reset" to clear results and try again
 
-## License
+### For Instructors
+1. **Update Data**: Modify the CSV file in `public/KaKb Key Calculator Labels.csv`
+2. **Adjust Tolerance**: Change the tolerance value in `src/store/calculatorStore.ts`
+3. **Customize Sections**: Update the CSV structure to add/remove lab sections
 
-This project is created for educational purposes.
+## 📊 CSV Data Format
+
+The app uses a structured CSV format with the following columns:
+- **Section**: Main lab section title
+- **Subsection**: Specific experiment within the section
+- **Label**: Description of the measurement/calculation
+- **Trial 1**: Expected value for Trial 1
+- **Trial 2**: Expected value for Trial 2
+- **Unit**: Unit of measurement
+
+## 🔧 Configuration
+
+### Tolerance Settings
+The validation tolerance is set to 10% by default. To change this:
+1. Open `src/store/calculatorStore.ts`
+2. Modify the `tolerance` value in the store
+3. The "close" range is automatically set to 10-15% of the tolerance
+
+### Adding New Lab Sections
+1. Update the CSV file with new section data
+2. Ensure proper section/subsection structure
+3. The app will automatically detect and display new sections
+
+## 🎨 Customization
+
+### Styling
+- Main styles: `src/App.css`
+- Component-specific styles are co-located with components
+- Uses CSS custom properties for easy theme changes
+
+### Input Types
+The app automatically detects input types based on labels:
+- **pH**: pH measurements
+- **Mass**: Mass measurements (grams)
+- **Keq**: Equilibrium constants
+- **Concentration**: Molar concentrations
+- **Unknown #**: Unknown sample numbers
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **Port already in use**: The app will automatically try the next available port
+2. **CSV not loading**: Check that the CSV file is in the `public/` directory
+3. **Values not validating**: Ensure the CSV has the correct structure
+
+### Development
+- **Hot Reload**: Changes are automatically reflected in the browser
+- **TypeScript**: Full type safety with comprehensive interfaces
+- **Linting**: ESLint and TypeScript compiler check for errors
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📞 Support
+
+For questions or issues, please open an issue on the GitHub repository.
+
+---
+
+**Built with ❤️ for chemistry education**
