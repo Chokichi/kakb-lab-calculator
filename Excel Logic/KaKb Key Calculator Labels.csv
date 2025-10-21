@@ -1,0 +1,56 @@
+﻿Section,The equilibrium constant of acetic acid,,Trial 1,Trial 2,
+1,b,pH of 0.50 M HC2H3O2,2.56,2.56,
+1,a,[H^+],0.002754229,0.002754229,M
+1,b,[C2H3O2^-],0.002754229,0.002754229,M
+1,c,[HC2H3O2],0.50,0.50,M
+1,d,Keq,1.5E-05,1.5E-05,Unitless
+Subsection,1c pH of 0.20 M HC2H3O2,,Trial 1,Trial 2,
+1,c,pH of solution,2.56,2.55,
+1,a,a [H^+],0.002754229,0.002818383,M
+1,b,b [C2H3O2^-],0.002754229,0.002818383,M
+1,c,c [HC2H3O2],0.20,0.20,M
+1,d,d Keq,3.8E-05,4.0E-05,Unitless
+Subsection,1d 0.50 M HC2H3O2 and solid NaC2H3O2,,Trial 1,Trial 2,
+1,a,grams of NaC2H3O2,0.5293,0.5234,g
+1,a,pH of mixture,4.22,4.36,pH
+1,a, [H^+],6.0256E-05,4.36516E-05,M
+1,b,[C2H3O2^-],0.322625869,0.319029623,M
+1,c,[HC2H3O2],0.50,0.50,M
+1,d,Keq,3.9E-05,2.8E-05,Unitless
+1,e,Average the six values for Keq,2.9E-05,,Unitless
+1,f,Calculate your percent error if the known Keq  = 1.76x10^-5,-65.46%,,%
+Section,Keq of an unknown weak acid,,,,
+Subsection,2a pH of 0.10M Unknown Acid,,Trial 1,Trial 2,Unitless
+2,a,Unknown #:,,1,
+2,a,pH,3.03,3.03,pH
+2,a,[H^+],0.000933254,0.000933254,M
+2,b,[A^-],0.000933254,0.000933254,M
+2,c,[HA],0.10,0.10,M
+2,d,Keq,8.7E-06,8.7E-06,Unitless
+Subsection,2b 5 mL of 0.1M NaOH plus 25 mL of Unknown Acid,,Trial 1,Trial 2,
+2,a,pH of mixture,4.04,4.1,pH
+2,b,[H^+],9.12011E-05,7.94328E-05,M
+2,c,[A^-],0.017,0.017,M
+2,d,[HA],0.067,0.067,M
+2,e,Keq,2.3E-05,2.0E-05,Unitless
+Subsection,2c 15 mL of 0.1M NaOH plus 30 mL of Unknown Acid,,Trial 1,Trial 2,
+2,a,a pH of mixture,4.54,4.64,pH
+2,b,[H^+],2.88403E-05,2.29087E-05,M
+2,c,[A^-],0.033,0.033,M
+2,d,[HA],0.033,0.033,M
+2,e,Keq,2.9E-05,2.3E-05,M
+2,,Average the six values for Keq,1.86E-05,,Unitless
+Section,The Equilibrium Constant of a Weak Base,,,,
+Subsection,3a pH of 0.50M Unknown Weak Base,,Trial 1,Trial 2,
+3,a,a pH of 0.50M Unknown Weak Base,11.26,11.12,pH
+3,a,[OH^],1.82E-03,1.32E-03,M
+3,b,[HB^+],1.82E-03,1.32E-03,M
+3,c,[B],0.50,0.50,M
+3,d,Keq,6.6E-06,3.5E-06,Unitless
+Subsection,3b 5 mL of 0.1M HCl plus 20 mL of 0.50 M Unknown Base,,Trial 1,Trial 2,
+3,a,pH of mixture,10.40,10.40,pH
+3,b,[OH^],2.51E-04,2.51E-04,M
+3,c,[HB^+],2.00E-02,2.00E-02,M
+3,d,[B],0.38,0.38,M
+3,e,Keq,1.3E-05,1.3E-05,Unitless
+3,c,Average the four values for Keq,9.13E-06,,Unitless

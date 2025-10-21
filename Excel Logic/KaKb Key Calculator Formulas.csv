@@ -1,0 +1,56 @@
+﻿Section,The equilibrium constant of acetic acid,,Trial 1,Trial 2,
+1,b,pH of 0.50 M HC2H3O2,2.56,2.56,
+1,a,[H^+],=10^-D2,=10^-E2,M
+1,b,[C2H3O2^-],=D3,=E3,M
+1,c,[HC2H3O2],0.5,0.5,M
+1,d,Keq,=D3*D4/D5,=E3*E4/E5,Unitless
+Subsection,1c pH of 0.20 M HC2H3O2,,Trial 1,Trial 2,
+1,c,pH of solution,2.56,2.55,
+1,a,a [H^+],=10^-D8,=10^-E8,M
+1,b,b [C2H3O2^-],=D9,=E9,M
+1,c,c [HC2H3O2],0.2,0.2,M
+1,d,d Keq,=D9*D10/D11,=E9*E10/E11,Unitless
+Subsection,1d 0.50 M HC2H3O2 and solid NaC2H3O2,,Trial 1,Trial 2,
+1,a,grams of NaC2H3O2,0.5293,0.5234,g
+1,a,pH of mixture,4.22,4.36,pH
+1,a, [H^+],=10^-D15,=10^-E15,M
+1,b,[C2H3O2^-],=D14/82.03/0.02,=E14/82.03/0.02,M
+1,c,[HC2H3O2],0.5,0.5,M
+1,d,Keq,=D16*D17/D18,=E16*E17/E18,Unitless
+1,e,Average the six values for Keq,"=SUM(D19,E19,D12,E12,E6,D6)/6",,Unitless
+1,f,Calculate your percent error if the known Keq  = 1.76x10^-5,=(0.0000176-D20)/0.0000176,,%
+Section,Keq of an unknown weak acid,,,,
+Subsection,2a pH of 0.10M Unknown Acid,,Trial 1,Trial 2,Unitless
+2,a,Unknown #:,,1,
+2,a,pH,3.03,3.03,pH
+2,a,[H^+],=10^-D25,=10^-E25,M
+2,b,[A^-],=D26,=E26,M
+2,c,[HA],0.1,0.1,M
+2,d,Keq,=D26*D27/D28,=E26*E27/E28,Unitless
+Subsection,2b 5 mL of 0.1M NaOH plus 25 mL of Unknown Acid,,Trial 1,Trial 2,
+2,a,pH of mixture,4.04,4.1,pH
+2,b,[H^+],=10^-D31,=10^-E31,M
+2,c,[A^-],=0.005*0.1/0.03,=0.005*0.1/0.03,M
+2,d,[HA],=(0.1*0.025-0.1*0.005)/0.03,=(0.1*0.025-0.1*0.005)/0.03,M
+2,e,Keq,=D32*D33/D34,=E32*E33/E34,Unitless
+Subsection,2c 15 mL of 0.1M NaOH plus 30 mL of Unknown Acid,,Trial 1,Trial 2,
+2,a,a pH of mixture,4.54,4.64,pH
+2,b,[H^+],=10^-D37,=10^-E37,M
+2,c,[A^-],=0.015*0.1/0.045,=0.015*0.1/0.045,M
+2,d,[HA],=0.015*0.1/0.045,=0.015*0.1/0.045,M
+2,e,Keq,=D38*D39/D40,=E38*E39/E40,M
+2,,Average the six values for Keq,"=AVERAGE(D41:E41,D35:E35,D29:E29)",,Unitless
+Section,The Equilibrium Constant of a Weak Base,,,,
+Subsection,3a pH of 0.50M Unknown Weak Base,,Trial 1,Trial 2,
+3,a,a pH of 0.50M Unknown Weak Base,11.26,11.12,pH
+3,a,[OH^],=10^-(14-D45),=10^-(14-E45),M
+3,b,[HB^+],=D46,=E46,M
+3,c,[B],0.5,0.5,M
+3,d,Keq,=D46*D47/D48,=E46*E47/E48,Unitless
+Subsection,3b 5 mL of 0.1M HCl plus 20 mL of 0.50 M Unknown Base,,Trial 1,Trial 2,
+3,a,pH of mixture,10.4,10.4,pH
+3,b,[OH^],=10^-(14-D51),=10^-(14-E51),M
+3,c,[HB^+],=0.0005/0.025,=0.0005/0.025,M
+3,d,[B],=0.0095/0.025,=0.0095/0.025,M
+3,e,Keq,=D52*D53/D54,=E52*E53/E54,Unitless
+3,c,Average the four values for Keq,"=AVERAGE(D55:E55,D49:E49)",,Unitless
