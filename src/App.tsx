@@ -19,8 +19,8 @@ function App() {
   // Load default data on app start
   useEffect(() => {
     if (rows.length === 0) {
-      // Load the new structured CSV
-      fetch('/KaKb Key Calculator Labels.csv')
+      // Load the formulas CSV for dynamic calculations
+      fetch('/KaKb Key Calculator Formulas.csv')
         .then(response => response.text())
         .then(content => loadData(content))
         .catch(error => {

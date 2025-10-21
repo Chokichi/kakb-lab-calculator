@@ -2,7 +2,7 @@ import { CalculationRow } from '../types';
 
 export class CSVParser {
   constructor() {
-    // Simple parser for the new structured CSV format
+    // Parser for the structured CSV format with formulas
   }
 
   /**
@@ -81,9 +81,13 @@ export class CSVParser {
     section: string,
     subsection: string
   ): CalculationRow | null {
-    // Parse the expected values from the CSV
-    const expectedTrial1 = this.parseNumericValue(trial1);
-    const expectedTrial2 = this.parseNumericValue(trial2);
+    // Check if this is a formula (starts with =)
+    const isFormulaTrial1 = trial1.startsWith('=');
+    const isFormulaTrial2 = trial2.startsWith('=');
+    
+    // Parse the expected values from the CSV (for non-formula values)
+    const expectedTrial1 = isFormulaTrial1 ? null : this.parseNumericValue(trial1);
+    const expectedTrial2 = isFormulaTrial2 ? null : this.parseNumericValue(trial2);
     
     // Clean the label for comparison
     const cleanLabel = this.cleanLabel(label).toLowerCase();
@@ -98,8 +102,11 @@ export class CSVParser {
       id,
       label: this.cleanLabel(label),
       unit: unit || '',
-      formula: null, // We'll add formulas later if needed
-      inputs: [],
+      formula: isFormulaTrial1 || isFormulaTrial2 ? {
+        trial1: isFormulaTrial1 ? trial1 : null,
+        trial2: isFormulaTrial2 ? trial2 : null
+      } : null,
+      inputs: this.extractInputs(trial1, trial2),
       tolerance: 0.10, // Default 10% tolerance
       studentValueTrial1: null,
       studentValueTrial2: null,
@@ -188,5 +195,28 @@ export class CSVParser {
     
     const num = parseFloat(value);
     return isNaN(num) ? undefined : num;
+  }
+
+  private extractInputs(trial1: string, trial2: string): string[] {
+    const inputs = new Set<string>();
+    
+    // Extract cell references from formulas
+    const cellRefRegex = /[A-Z]+\d+/g;
+    
+    if (trial1.startsWith('=')) {
+      const matches = trial1.match(cellRefRegex);
+      if (matches) {
+        matches.forEach(match => inputs.add(match));
+      }
+    }
+    
+    if (trial2.startsWith('=')) {
+      const matches = trial2.match(cellRefRegex);
+      if (matches) {
+        matches.forEach(match => inputs.add(match));
+      }
+    }
+    
+    return Array.from(inputs);
   }
 }

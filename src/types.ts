@@ -2,7 +2,7 @@ export interface CalculationRow {
   id: string;
   label: string;
   unit: string;
-  formula: string | null; // null for direct input values
+  formula: { trial1: string | null; trial2: string | null } | null; // Excel formulas for each trial
   inputs: string[]; // dependencies
   tolerance: number;
   studentValueTrial1: number | null;
