@@ -19,8 +19,8 @@ function checkCorrectness(studentValue: number | null, expectedValue: number | n
   return Math.abs(studentValue - expectedValue) / Math.abs(expectedValue) <= tolerance;
 }
 
-// Helper function to check if student value is close (between 10% and 15%)
-function checkClose(studentValue: number | null, expectedValue: number | null): boolean | null {
+// Helper function to check if student value is close (between tolerance and toleranceClose)
+function checkClose(studentValue: number | null, expectedValue: number | null, tolerance: number, toleranceClose: number): boolean | null {
   if (studentValue === null || expectedValue === null) return null;
   
   if (expectedValue === 0) {
@@ -28,7 +28,7 @@ function checkClose(studentValue: number | null, expectedValue: number | null): 
   }
   
   const errorPercent = Math.abs(studentValue - expectedValue) / Math.abs(expectedValue);
-  return errorPercent > 0.10 && errorPercent <= 0.15;
+  return errorPercent > tolerance && errorPercent <= toleranceClose;
 }
 
 // Helper function to extract dependencies from a formula
@@ -201,6 +201,8 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
 export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   rows: [],
   tolerance: 0.10,
+  toleranceClose: 0.15,
+  title: 'Ka/Kb Lab Calculator',
   isLoading: false,
   error: null,
 
@@ -243,19 +245,19 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     });
   },
 
-  setTolerance: (tolerance: number) => {
-    set({ tolerance });
-    // Recheck all values with new tolerance
-    const { rows } = get();
-    const updatedRows = rows.map((row) => ({
-      ...row,
-      isCorrectTrial1: checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance),
-      isCorrectTrial2: checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance),
-      isCloseTrial1: checkClose(row.studentValueTrial1, row.computedValueTrial1),
-      isCloseTrial2: checkClose(row.studentValueTrial2, row.computedValueTrial2),
-    }));
-    set({ rows: updatedRows });
-  },
+    setTolerance: (tolerance: number) => {
+      set({ tolerance });
+      // Recheck all values with new tolerance
+      const { rows, toleranceClose } = get();
+      const updatedRows = rows.map((row) => ({
+        ...row,
+        isCorrectTrial1: checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance),
+        isCorrectTrial2: checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance),
+        isCloseTrial1: checkClose(row.studentValueTrial1, row.computedValueTrial1, tolerance, toleranceClose),
+        isCloseTrial2: checkClose(row.studentValueTrial2, row.computedValueTrial2, tolerance, toleranceClose),
+      }));
+      set({ rows: updatedRows });
+    },
 
   resetAll: () => {
     set((state) => ({
@@ -273,35 +275,41 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     }));
   },
 
-      loadData: (csvData: string) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          const rows = csvParser.parseCSV(csvData);
-          set({ rows, isLoading: false });
-        } catch (error) {
-          set({ 
-            error: error instanceof Error ? error.message : 'Failed to parse CSV data',
-            isLoading: false 
-          });
-        }
-      },
+  loadData: (csvData: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const { rows, title, tolerance1, tolerance2 } = csvParser.parseCSV(csvData);
+      set({ 
+        rows, 
+        title,
+        tolerance: tolerance1,
+        toleranceClose: tolerance2,
+        isLoading: false 
+      });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to parse CSV data',
+        isLoading: false 
+      });
+    }
+  },
 
   recalculateAll: () => {
     // Simple validation against expected values
-    const { rows, tolerance } = get();
+    const { rows, tolerance, toleranceClose } = get();
     const updatedRows = rows.map((row) => ({
       ...row,
       isCorrectTrial1: checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance),
       isCorrectTrial2: checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance),
-      isCloseTrial1: checkClose(row.studentValueTrial1, row.computedValueTrial1),
-      isCloseTrial2: checkClose(row.studentValueTrial2, row.computedValueTrial2),
+      isCloseTrial1: checkClose(row.studentValueTrial1, row.computedValueTrial1, tolerance, toleranceClose),
+      isCloseTrial2: checkClose(row.studentValueTrial2, row.computedValueTrial2, tolerance, toleranceClose),
     }));
     set({ rows: updatedRows });
   },
 
   checkWork: (subsectionId: string) => {
-    const { tolerance } = get();
+    const { tolerance, toleranceClose } = get();
     
     // Set checking state for all rows in this subsection
     set((state) => ({
@@ -343,10 +351,10 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
               const isCorrectTrial2 = hasTrial2Value ? 
                 checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance) : null;
               
-              const isCloseTrial1 = hasTrial1Value ? 
-                checkClose(row.studentValueTrial1, row.computedValueTrial1) : null;
-              const isCloseTrial2 = hasTrial2Value ? 
-                checkClose(row.studentValueTrial2, row.computedValueTrial2) : null;
+                const isCloseTrial1 = hasTrial1Value ? 
+                  checkClose(row.studentValueTrial1, row.computedValueTrial1, tolerance, toleranceClose) : null;
+                const isCloseTrial2 = hasTrial2Value ? 
+                  checkClose(row.studentValueTrial2, row.computedValueTrial2, tolerance, toleranceClose) : null;
               
               return {
                 ...row,

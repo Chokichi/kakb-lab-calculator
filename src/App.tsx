@@ -7,6 +7,7 @@ import './App.css';
 function App() {
   const {
     rows,
+    title,
     isLoading,
     error,
     setStudentValue,
@@ -137,8 +138,8 @@ Average the four values for Keq,9.13E-06,,`);
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>Ka/Kb Lab Calculator</h1>
+        <header className="app-header">
+          <h1>{title}</h1>
         <p>Enter your measured and calculated concentrations to check your work</p>
         <div className="instructions">
           <p><strong>Instructions:</strong></p>

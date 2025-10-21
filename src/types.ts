@@ -32,6 +32,8 @@ export interface CalculationRow {
 export interface CalculatorState {
   rows: CalculationRow[];
   tolerance: number;
+  toleranceClose: number; // Added for "close" tolerance
+  title: string; // Added for page title
   isLoading: boolean;
   error: string | null;
 }

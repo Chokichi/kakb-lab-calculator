@@ -8,13 +8,19 @@ export class CSVParser {
   /**
    * Parses the new structured CSV data and converts it to CalculationRow objects
    */
-  parseCSV(csvData: string): CalculationRow[] {
+  parseCSV(csvData: string): { rows: CalculationRow[], title: string, tolerance1: number, tolerance2: number } {
     const lines = csvData.split('\n');
     const rows: CalculationRow[] = [];
     let currentSection = '';
     let currentSubsection = '';
+    
+    // Extract parameters from first row
+    const firstRow = this.parseCSVLine(lines[0]);
+    const title = firstRow[1] || 'Ka/Kb Lab Calculator';
+    const tolerance1 = parseFloat(firstRow[3]) || 0.1;
+    const tolerance2 = parseFloat(firstRow[5]) || 0.15;
 
-    for (let i = 0; i < lines.length; i++) {
+    for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
@@ -68,7 +74,7 @@ export class CSVParser {
       }
     }
 
-    return rows;
+    return { rows, title, tolerance1, tolerance2 };
   }
 
   private createCalculationRow(
