@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CalculationRow } from '../types';
 
 interface CalculatorRowProps {
   row: CalculationRow;
   onValueChange: (id: string, trial: 'trial1' | 'trial2', value: number | null) => void;
+  allRows: CalculationRow[]; // Add this to find dependent rows
 }
 
-export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange }) => {
+export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange, allRows }) => {
+  const [showTooltip, setShowTooltip] = useState<{ trial: 'trial1' | 'trial2' | null }>({ trial: null });
+
   const handleInputChange = (trial: 'trial1' | 'trial2') => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = value === '' ? null : parseFloat(value);
     onValueChange(row.id, trial, numericValue);
+  };
+
+  // Helper function to find rows that correspond to missing dependencies
+  const findDependentRows = (missingDeps: string[]) => {
+    return missingDeps.map(dep => {
+      const dependentRow = allRows.find(r => r.trial1DataTag === dep || r.trial2DataTag === dep);
+      return dependentRow ? { row: dependentRow, dataTag: dep } : null;
+    }).filter(Boolean);
+  };
+
+  // Helper function to get tooltip content
+  const getTooltipContent = (trial: 'trial1' | 'trial2') => {
+    const missingDeps = trial === 'trial1' ? row.missingDependenciesTrial1 : row.missingDependenciesTrial2;
+    if (missingDeps.length === 0) return null;
+    
+    const dependentRows = findDependentRows(missingDeps);
+    return (
+      <div className="dependency-tooltip">
+        <div className="tooltip-header">Missing dependencies:</div>
+        <div className="tooltip-content">
+          {dependentRows.map((dep, index) => (
+            <div key={index} className="dependency-item">
+              • {dep?.row.label} ({dep?.dataTag})
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const getStatusIcon = (trial: 'trial1' | 'trial2') => {
@@ -27,16 +58,24 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
   };
 
   const getInputClassName = (trial: 'trial1' | 'trial2') => {
+    let className = 'trial-input';
+    
+    // Add dependency warning class if there are missing dependencies
+    const canCalculate = trial === 'trial1' ? row.canCalculateTrial1 : row.canCalculateTrial2;
+    if (!canCalculate) {
+      className += ' missing-dependencies';
+    }
+    
     // Only apply status styling if the row has been checked
-    if (!row.isChecked) return 'trial-input';
+    if (!row.isChecked) return className;
     
     const isCorrect = trial === 'trial1' ? row.isCorrectTrial1 : row.isCorrectTrial2;
     const isClose = trial === 'trial1' ? row.isCloseTrial1 : row.isCloseTrial2;
     
-    if (isCorrect === null && isClose === null) return 'trial-input';
-    if (isCorrect) return 'trial-input correct';
-    if (isClose) return 'trial-input close';
-    return 'trial-input incorrect';
+    if (isCorrect === null && isClose === null) return className;
+    if (isCorrect) return className + ' correct';
+    if (isClose) return className + ' close';
+    return className + ' incorrect';
   };
 
   const getInputType = () => {
@@ -65,41 +104,55 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
       </div>
       
       <div className="row-inputs">
-        <div className="trial-inputs">
-          <div className="trial-label">Trial 1</div>
-          <div className="trial-input-wrapper">
-            <input
-              type="number"
-              step="any"
-              value={row.studentValueTrial1 || ''}
-              onChange={handleInputChange('trial1')}
-              placeholder={getPlaceholder()}
-              disabled={!row.isDirectInput}
-              className={getInputClassName('trial1')}
-            />
-            <div className="trial-status">
-              {getStatusIcon('trial1')}
+        {row.trial1DataTag && (
+          <div className="trial-inputs">
+            <div className="trial-label">Trial 1</div>
+            <div className="trial-input-wrapper">
+              <div className="input-container">
+                <input
+                  type="number"
+                  step="any"
+                  value={row.studentValueTrial1 || ''}
+                  onChange={handleInputChange('trial1')}
+                  placeholder={getPlaceholder()}
+                  disabled={!row.shouldAllowInput}
+                  className={getInputClassName('trial1')}
+                  onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
+                  onMouseLeave={() => setShowTooltip({ trial: null })}
+                />
+                {showTooltip.trial === 'trial1' && getTooltipContent('trial1')}
+              </div>
+              <div className="trial-status">
+                {getStatusIcon('trial1')}
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
-        <div className="trial-inputs">
-          <div className="trial-label">Trial 2</div>
-          <div className="trial-input-wrapper">
-            <input
-              type="number"
-              step="any"
-              value={row.studentValueTrial2 || ''}
-              onChange={handleInputChange('trial2')}
-              placeholder={getPlaceholder()}
-              disabled={!row.isDirectInput}
-              className={getInputClassName('trial2')}
-            />
-            <div className="trial-status">
-              {getStatusIcon('trial2')}
+        {row.trial2DataTag && (
+          <div className="trial-inputs">
+            <div className="trial-label">Trial 2</div>
+            <div className="trial-input-wrapper">
+              <div className="input-container">
+                <input
+                  type="number"
+                  step="any"
+                  value={row.studentValueTrial2 || ''}
+                  onChange={handleInputChange('trial2')}
+                  placeholder={getPlaceholder()}
+                  disabled={!row.shouldAllowInput}
+                  className={getInputClassName('trial2')}
+                  onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
+                  onMouseLeave={() => setShowTooltip({ trial: null })}
+                />
+                {showTooltip.trial === 'trial2' && getTooltipContent('trial2')}
+              </div>
+              <div className="trial-status">
+                {getStatusIcon('trial2')}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       
       <div className="row-unit">

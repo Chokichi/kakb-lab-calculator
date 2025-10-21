@@ -68,6 +68,7 @@ export const CalculatorGrid: React.FC<CalculatorGridProps> = ({
                           key={row.id}
                           row={row}
                           onValueChange={onValueChange}
+                          allRows={rows}
                         />
                       ))}
                     </div>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CalculatorState, CalculatorActions } from '../types';
+import { CalculationRow, CalculatorState, CalculatorActions } from '../types';
 import { CSVParser } from '../utils/csvParser';
 import { FormulaEngine } from '../utils/formulaEngine';
 
@@ -31,128 +31,172 @@ function checkClose(studentValue: number | null, expectedValue: number | null): 
   return errorPercent > 0.10 && errorPercent <= 0.15;
 }
 
+// Helper function to extract dependencies from a formula
+function extractDependencies(formula: string): string[] {
+  if (!formula || !formula.startsWith('=')) return [];
+  
+  const cellRefRegex = /[A-Z]+\d+/g;
+  const matches = formula.match(cellRefRegex);
+  return matches ? Array.from(new Set(matches)) : [];
+}
+
+// Helper function to check if all dependencies are available
+function checkDependencies(dependencies: string[], availableValues: { [key: string]: number }): { canCalculate: boolean; missing: string[] } {
+  const missing = dependencies.filter(dep => !(dep in availableValues));
+  return {
+    canCalculate: missing.length === 0,
+    missing
+  };
+}
+
 // Helper function to calculate expected values based on student inputs
-function calculateExpectedValues(rows: any[]): any[] {
-  return rows.map(row => {
+function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
+  // First pass: calculate values that only depend on student inputs
+  let updatedRows = rows.map(row => {
     if (!row.formula) {
       return row; // No formula, keep existing values
     }
 
-    // Create input map from student values
+    // Create input map from student values only
     const inputs: { [key: string]: number } = {};
     
-    // Map student inputs to cell references
+    // Map student inputs to data tags
     rows.forEach(r => {
-      if (r.studentValueTrial1 !== null) {
-        const cellRef = getCellReferenceFromLabel(r.label, r.section, r.subsection, 'trial1');
-        if (cellRef) inputs[cellRef] = r.studentValueTrial1;
+      if (r.studentValueTrial1 !== null && r.trial1DataTag) {
+        inputs[r.trial1DataTag] = r.studentValueTrial1;
       }
-      if (r.studentValueTrial2 !== null) {
-        const cellRef = getCellReferenceFromLabel(r.label, r.section, r.subsection, 'trial2');
-        if (cellRef) inputs[cellRef] = r.studentValueTrial2;
+      if (r.studentValueTrial2 !== null && r.trial2DataTag) {
+        inputs[r.trial2DataTag] = r.studentValueTrial2;
       }
     });
 
-    // Calculate expected values using formulas
+    // Check dependencies for trial 1
+    let missingDependenciesTrial1: string[] = [];
+    let canCalculateTrial1 = true;
+    if (row.formula.trial1) {
+      const dependencies = extractDependencies(row.formula.trial1);
+      const depCheck = checkDependencies(dependencies, inputs);
+      canCalculateTrial1 = depCheck.canCalculate;
+      missingDependenciesTrial1 = depCheck.missing;
+    }
+
+    // Check dependencies for trial 2
+    let missingDependenciesTrial2: string[] = [];
+    let canCalculateTrial2 = true;
+    if (row.formula.trial2) {
+      const dependencies = extractDependencies(row.formula.trial2);
+      const depCheck = checkDependencies(dependencies, inputs);
+      canCalculateTrial2 = depCheck.canCalculate;
+      missingDependenciesTrial2 = depCheck.missing;
+    }
+
+    // Calculate expected values using formulas only if dependencies are met
     let computedValueTrial1 = row.computedValueTrial1;
     let computedValueTrial2 = row.computedValueTrial2;
 
-    if (row.formula.trial1) {
+    if (row.formula.trial1 && canCalculateTrial1) {
       const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
-      computedValueTrial1 = result1;
+      if (result1 !== null) {
+        computedValueTrial1 = result1;
+      }
     }
 
-    if (row.formula.trial2) {
+    if (row.formula.trial2 && canCalculateTrial2) {
       const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
-      computedValueTrial2 = result2;
+      if (result2 !== null) {
+        computedValueTrial2 = result2;
+      }
     }
 
     return {
       ...row,
       computedValueTrial1,
-      computedValueTrial2
+      computedValueTrial2,
+      missingDependenciesTrial1,
+      missingDependenciesTrial2,
+      canCalculateTrial1,
+      canCalculateTrial2
     };
   });
+
+  // Second pass: calculate values that depend on other calculated values
+  // This includes the "Average" formulas that reference other calculated values
+  updatedRows = updatedRows.map(row => {
+    if (!row.formula) {
+      return row;
+    }
+
+    // Create input map including both student values and calculated values
+    const inputs: { [key: string]: number } = {};
+    
+    updatedRows.forEach(r => {
+      if (r.studentValueTrial1 !== null && r.trial1DataTag) {
+        inputs[r.trial1DataTag] = r.studentValueTrial1;
+      }
+      if (r.studentValueTrial2 !== null && r.trial2DataTag) {
+        inputs[r.trial2DataTag] = r.studentValueTrial2;
+      }
+      // Also include calculated values that are available
+      if (r.computedValueTrial1 !== null && r.trial1DataTag) {
+        inputs[r.trial1DataTag] = r.computedValueTrial1;
+      }
+      if (r.computedValueTrial2 !== null && r.trial2DataTag) {
+        inputs[r.trial2DataTag] = r.computedValueTrial2;
+      }
+    });
+
+    // Check dependencies for trial 1
+    let missingDependenciesTrial1: string[] = [];
+    let canCalculateTrial1 = true;
+    if (row.formula.trial1) {
+      const dependencies = extractDependencies(row.formula.trial1);
+      const depCheck = checkDependencies(dependencies, inputs);
+      canCalculateTrial1 = depCheck.canCalculate;
+      missingDependenciesTrial1 = depCheck.missing;
+    }
+
+    // Check dependencies for trial 2
+    let missingDependenciesTrial2: string[] = [];
+    let canCalculateTrial2 = true;
+    if (row.formula.trial2) {
+      const dependencies = extractDependencies(row.formula.trial2);
+      const depCheck = checkDependencies(dependencies, inputs);
+      canCalculateTrial2 = depCheck.canCalculate;
+      missingDependenciesTrial2 = depCheck.missing;
+    }
+
+    // Only recalculate if we haven't already calculated this value and dependencies are met
+    let computedValueTrial1 = row.computedValueTrial1;
+    let computedValueTrial2 = row.computedValueTrial2;
+
+    if (row.formula.trial1 && computedValueTrial1 === null && canCalculateTrial1) {
+      const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
+      if (result1 !== null) {
+        computedValueTrial1 = result1;
+      }
+    }
+
+    if (row.formula.trial2 && computedValueTrial2 === null && canCalculateTrial2) {
+      const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
+      if (result2 !== null) {
+        computedValueTrial2 = result2;
+      }
+    }
+
+    return {
+      ...row,
+      computedValueTrial1,
+      computedValueTrial2,
+      missingDependenciesTrial1,
+      missingDependenciesTrial2,
+      canCalculateTrial1,
+      canCalculateTrial2
+    };
+  });
+
+  return updatedRows;
 }
 
-// Helper function to map labels to cell references
-function getCellReferenceFromLabel(label: string, section: string, subsection: string, trial: 'trial1' | 'trial2'): string | null {
-  const cleanLabel = label.toLowerCase();
-  const col = trial === 'trial1' ? 'D' : 'E';
-  
-  // Map based on section and label patterns
-  if (section.includes('equilibrium constant of acetic acid')) {
-    if (cleanLabel.includes('ph of 0.50 m hc2h3o2')) return col + '2';
-    if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '3';
-    if (cleanLabel.includes('[c2h3o2^-]') || cleanLabel.includes('[c2h3o2-]')) return col + '4';
-    if (cleanLabel.includes('[hc2h3o2]')) return col + '5';
-    if (cleanLabel.includes('keq')) return col + '6';
-  }
-  
-  if (subsection.includes('pH of 0.20 M HC2H3O2')) {
-    if (cleanLabel.includes('ph of solution')) return col + '8';
-    if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '9';
-    if (cleanLabel.includes('[c2h3o2^-]') || cleanLabel.includes('[c2h3o2-]')) return col + '10';
-    if (cleanLabel.includes('[hc2h3o2]')) return col + '11';
-    if (cleanLabel.includes('keq')) return col + '12';
-  }
-  
-  if (subsection.includes('0.50 M HC2H3O2 and solid NaC2H3O2')) {
-    if (cleanLabel.includes('grams of nac2h3o2')) return col + '14';
-    if (cleanLabel.includes('ph of mixture')) return col + '15';
-    if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '16';
-    if (cleanLabel.includes('[c2h3o2^-]') || cleanLabel.includes('[c2h3o2-]')) return col + '17';
-    if (cleanLabel.includes('[hc2h3o2]')) return col + '18';
-    if (cleanLabel.includes('keq')) return col + '19';
-  }
-  
-  if (section.includes('Keq of an unknown weak acid')) {
-    if (subsection.includes('pH of 0.10M Unknown Acid')) {
-      if (cleanLabel.includes('unknown #')) return col + '24';
-      if (cleanLabel.includes('ph')) return col + '25';
-      if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '26';
-      if (cleanLabel.includes('[a^-]') || cleanLabel.includes('[a-]')) return col + '27';
-      if (cleanLabel.includes('[ha]')) return col + '28';
-      if (cleanLabel.includes('keq')) return col + '29';
-    }
-    
-    if (subsection.includes('5 mL of 0.1M NaOH plus 25 mL of Unknown Acid')) {
-      if (cleanLabel.includes('ph of mixture')) return col + '31';
-      if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '32';
-      if (cleanLabel.includes('[a^-]') || cleanLabel.includes('[a-]')) return col + '33';
-      if (cleanLabel.includes('[ha]')) return col + '34';
-      if (cleanLabel.includes('keq')) return col + '35';
-    }
-    
-    if (subsection.includes('15 mL of 0.1M NaOH plus 30 mL of Unknown Acid')) {
-      if (cleanLabel.includes('ph of mixture')) return col + '37';
-      if (cleanLabel.includes('[h^+]') || cleanLabel.includes('[h+]')) return col + '38';
-      if (cleanLabel.includes('[a^-]') || cleanLabel.includes('[a-]')) return col + '39';
-      if (cleanLabel.includes('[ha]')) return col + '40';
-      if (cleanLabel.includes('keq')) return col + '41';
-    }
-  }
-  
-  if (section.includes('The Equilibrium Constant of a Weak Base')) {
-    if (subsection.includes('pH of 0.50M Unknown Weak Base')) {
-      if (cleanLabel.includes('ph of 0.50m unknown weak base')) return col + '45';
-      if (cleanLabel.includes('[oh^]') || cleanLabel.includes('[oh-]')) return col + '46';
-      if (cleanLabel.includes('[hb^+]') || cleanLabel.includes('[hb+]')) return col + '47';
-      if (cleanLabel.includes('[b]')) return col + '48';
-      if (cleanLabel.includes('keq')) return col + '49';
-    }
-    
-    if (subsection.includes('5 mL of 0.1M HCl plus 20 mL of 0.50 M Unknown Base')) {
-      if (cleanLabel.includes('ph of mixture')) return col + '51';
-      if (cleanLabel.includes('[oh^]') || cleanLabel.includes('[oh-]')) return col + '52';
-      if (cleanLabel.includes('[hb^+]') || cleanLabel.includes('[hb+]')) return col + '53';
-      if (cleanLabel.includes('[b]')) return col + '54';
-      if (cleanLabel.includes('keq')) return col + '55';
-    }
-  }
-  
-  return null;
-}
 
 export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   rows: [],
@@ -162,7 +206,11 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
 
   setStudentValue: (id: string, trial: 'trial1' | 'trial2', value: number | null) => {
     set((state) => {
-      // First update the student value
+      // Find the row being updated to get its subsection
+      const updatedRow = state.rows.find(row => row.id === id);
+      const subsectionId = updatedRow?.subsection;
+
+      // First update the student value and reset checked state for the entire subsection
       const updatedRows = state.rows.map((row) => {
         if (row.id === id) {
           return { 
@@ -172,29 +220,26 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
             isChecked: false
           };
         }
+        // Reset checked state for all calculated rows in the same subsection
+        // (but not for input rows like pH)
+        if (row.subsection === subsectionId && !row.isDirectInput) {
+          return {
+            ...row,
+            isChecked: false,
+            isCorrectTrial1: null,
+            isCorrectTrial2: null,
+            isCloseTrial1: null,
+            isCloseTrial2: null
+          };
+        }
         return row;
       });
 
       // Then recalculate all expected values based on current student inputs
       const recalculatedRows = calculateExpectedValues(updatedRows);
 
-      // Finally check correctness for all rows
-      const finalRows = recalculatedRows.map((row) => {
-        const isCorrectTrial1 = checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, state.tolerance);
-        const isCorrectTrial2 = checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, state.tolerance);
-        const isCloseTrial1 = checkClose(row.studentValueTrial1, row.computedValueTrial1);
-        const isCloseTrial2 = checkClose(row.studentValueTrial2, row.computedValueTrial2);
-
-        return {
-          ...row,
-          isCorrectTrial1,
-          isCorrectTrial2,
-          isCloseTrial1,
-          isCloseTrial2
-        };
-      });
-
-      return { rows: finalRows };
+      // Don't check correctness here - wait for "Check Work" button
+      return { rows: recalculatedRows };
     });
   },
 
@@ -228,19 +273,19 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     }));
   },
 
-  loadData: (csvData: string) => {
-    set({ isLoading: true, error: null });
-    
-    try {
-      const rows = csvParser.parseCSV(csvData);
-      set({ rows, isLoading: false });
-    } catch (error) {
-      set({ 
-        error: error instanceof Error ? error.message : 'Failed to parse CSV data',
-        isLoading: false 
-      });
-    }
-  },
+      loadData: (csvData: string) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          const rows = csvParser.parseCSV(csvData);
+          set({ rows, isLoading: false });
+        } catch (error) {
+          set({ 
+            error: error instanceof Error ? error.message : 'Failed to parse CSV data',
+            isLoading: false 
+          });
+        }
+      },
 
   recalculateAll: () => {
     // Simple validation against expected values
@@ -272,36 +317,53 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     const delay = 2000 + Math.random() * 1000;
     
     setTimeout(() => {
-      set((state) => ({
-        rows: state.rows.map((row) => {
+      set((state) => {
+        // First recalculate all expected values based on current student inputs
+        const recalculatedRows = calculateExpectedValues(state.rows);
+        
+        // Then check correctness for the subsection
+        const finalRows = recalculatedRows.map((row) => {
           if (row.subsection === subsectionId) {
-            // Only check rows that have values entered
-            const hasTrial1Value = row.studentValueTrial1 !== null;
-            const hasTrial2Value = row.studentValueTrial2 !== null;
-            
-            const isCorrectTrial1 = hasTrial1Value ? 
-              checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance) : null;
-            const isCorrectTrial2 = hasTrial2Value ? 
-              checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance) : null;
-            
-            const isCloseTrial1 = hasTrial1Value ? 
-              checkClose(row.studentValueTrial1, row.computedValueTrial1) : null;
-            const isCloseTrial2 = hasTrial2Value ? 
-              checkClose(row.studentValueTrial2, row.computedValueTrial2) : null;
-            
-            return {
-              ...row,
-              isCorrectTrial1,
-              isCorrectTrial2,
-              isCloseTrial1,
-              isCloseTrial2,
-              isChecking: false,
-              isChecked: true,
-            };
+            // Only check calculated values (rows with formulas), not input values
+            if (row.isDirectInput) {
+              // For input values (like pH), just mark as checked but don't validate
+              return {
+                ...row,
+                isChecking: false,
+                isChecked: true,
+                // Keep existing correctness values (should be null for inputs)
+              };
+            } else {
+              // For calculated values, check correctness
+              const hasTrial1Value = row.studentValueTrial1 !== null;
+              const hasTrial2Value = row.studentValueTrial2 !== null;
+              
+              const isCorrectTrial1 = hasTrial1Value ? 
+                checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance) : null;
+              const isCorrectTrial2 = hasTrial2Value ? 
+                checkCorrectness(row.studentValueTrial2, row.computedValueTrial2, tolerance) : null;
+              
+              const isCloseTrial1 = hasTrial1Value ? 
+                checkClose(row.studentValueTrial1, row.computedValueTrial1) : null;
+              const isCloseTrial2 = hasTrial2Value ? 
+                checkClose(row.studentValueTrial2, row.computedValueTrial2) : null;
+              
+              return {
+                ...row,
+                isCorrectTrial1,
+                isCorrectTrial2,
+                isCloseTrial1,
+                isCloseTrial2,
+                isChecking: false,
+                isChecked: true,
+              };
+            }
           }
           return row;
-        }),
-      }));
+        });
+        
+        return { rows: finalRows };
+      });
     }, delay);
   },
 

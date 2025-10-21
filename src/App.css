@@ -373,10 +373,63 @@
   color: black;
 }
 
+.trial-input.missing-dependencies {
+  border-color: #ff9800;
+  background-color: #fff3e0;
+  box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
 .trial-status {
   font-size: 1rem;
   min-width: 20px;
   text-align: center;
+}
+
+/* Tooltip styles */
+.input-container {
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+.dependency-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-top: 4px;
+}
+
+.dependency-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #333;
+}
+
+.tooltip-header {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.tooltip-content {
+  font-size: 0.75rem;
+}
+
+.dependency-item {
+  margin: 2px 0;
 }
 
 .row-status {

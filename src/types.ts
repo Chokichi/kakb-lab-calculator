@@ -14,12 +14,19 @@ export interface CalculationRow {
   isCloseTrial1: boolean | null;
   isCloseTrial2: boolean | null;
   isDirectInput: boolean; // true if this is a value students should enter directly
+  shouldAllowInput: boolean; // true if students should be able to enter values (both inputs and calculated values)
   isChecking: boolean; // true when this row is being checked
   isChecked: boolean; // true when this row has been checked
   section: string; // e.g., "The equilibrium constant of acetic acid"
   subsection: string; // e.g., "1b pH of 0.50 M HC2H3O2"
   trial1Value?: number; // reference value from CSV
   trial2Value?: number; // reference value from CSV
+  trial1DataTag: string; // Data tag for trial 1 (e.g., "F4", "G5")
+  trial2DataTag: string; // Data tag for trial 2 (e.g., "F4", "G5")
+  missingDependenciesTrial1: string[]; // Data tags that need values for trial 1
+  missingDependenciesTrial2: string[]; // Data tags that need values for trial 2
+  canCalculateTrial1: boolean; // Whether trial 1 can be calculated
+  canCalculateTrial2: boolean; // Whether trial 2 can be calculated
 }
 
 export interface CalculatorState {

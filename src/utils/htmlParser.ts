@@ -1,70 +1,75 @@
 import { CalculationRow } from '../types';
 
-export class CSVParser {
+export class HTMLParser {
   constructor() {
-    // Parser for the structured CSV format with formulas
+    // Parser for the Excel-generated HTML format
   }
 
   /**
-   * Parses the new structured CSV data and converts it to CalculationRow objects
+   * Parses the Excel-generated HTML data and converts it to CalculationRow objects
    */
-  parseCSV(csvData: string): CalculationRow[] {
-    const lines = csvData.split('\n');
+  parseHTML(htmlData: string): CalculationRow[] {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlData, 'text/html');
+    const table = doc.querySelector('table');
+    
+    if (!table) {
+      throw new Error('No table found in HTML data');
+    }
+
     const rows: CalculationRow[] = [];
+    const tableRows = table.querySelectorAll('tr');
     let currentSection = '';
     let currentSubsection = '';
+    let rowId = 1;
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
+    for (let i = 0; i < tableRows.length; i++) {
+      const row = tableRows[i];
+      const cells = row.querySelectorAll('td');
+      
+      if (cells.length < 6) continue;
 
-      const columns = this.parseCSVLine(line);
-      if (columns.length < 9) continue;
-
-      const [section, subsection, trial1DataTag, trial2DataTag, label, trial1, trial2, unit, entryType] = columns;
+      const section = this.getCellText(cells[0]);
+      const subsection = this.getCellText(cells[1]);
+      const label = this.getCellText(cells[2]);
+      const trial1 = this.getCellText(cells[3]);
+      const trial2 = this.getCellText(cells[4]);
+      const unit = this.getCellText(cells[5]);
+      const entryType = this.getCellText(cells[6]);
 
       // Handle section headers
-      if (section && !subsection && !trial1DataTag && !trial2DataTag && !label) {
-        currentSection = section;
+      if (section === 'Section') {
+        currentSection = subsection;
         currentSubsection = '';
         continue;
       }
       
       // Handle subsection headers
-      if (!section && subsection && !trial1DataTag && !trial2DataTag && !label) {
+      if (section === 'Subsection') {
         currentSubsection = subsection;
         continue;
       }
 
-      // Skip header row
-      if (section === 'Section') {
+      // Skip header rows
+      if (label === 'Label' || !label) {
         continue;
       }
-
-      // Skip rows without labels or with empty labels
-      if (!label || label.trim() === '') {
-        continue;
-      }
-
-      // Use the actual line number (i + 1) as the row ID to match Excel formulas
-      const rowId = (i + 1).toString();
 
       // Create calculation row
-      const row = this.createCalculationRow(
-        rowId,
+      const calculationRow = this.createCalculationRow(
+        rowId.toString(),
         label,
         unit,
         trial1,
         trial2,
         entryType,
         currentSection,
-        currentSubsection,
-        trial1DataTag,
-        trial2DataTag
+        currentSubsection
       );
 
-      if (row) {
-        rows.push(row);
+      if (calculationRow) {
+        rows.push(calculationRow);
+        rowId++;
       }
     }
 
@@ -79,20 +84,18 @@ export class CSVParser {
     trial2: string,
     entryType: string,
     section: string,
-    subsection: string,
-    trial1DataTag: string,
-    trial2DataTag: string
+    subsection: string
   ): CalculationRow | null {
     // Check if this is a formula (starts with =)
     const isFormulaTrial1 = trial1.startsWith('=');
     const isFormulaTrial2 = trial2.startsWith('=');
     
-    // Parse the expected values from the CSV (for non-formula values)
+    // Parse the expected values from the HTML (for non-formula values)
     const expectedTrial1 = isFormulaTrial1 ? null : this.parseNumericValue(trial1);
     const expectedTrial2 = isFormulaTrial2 ? null : this.parseNumericValue(trial2);
     
-    // Clean the label for comparison (not used in new format but kept for compatibility)
-    // const cleanLabel = this.cleanLabel(label).toLowerCase();
+    // Clean the label for comparison
+    const cleanLabel = this.cleanLabel(label).toLowerCase();
     
     // Determine if this is a direct input based on entry type
     const isDirectInput = entryType === 'Data';
@@ -125,16 +128,13 @@ export class CSVParser {
       section: section || 'Default',
       subsection: this.cleanSubsectionTitle(subsection) || '',
       trial1Value: expectedTrial1 || undefined,
-      trial2Value: expectedTrial2 || undefined,
-      trial1DataTag: (trial1 === 'NA' || trial1 === '') ? '' : (trial1DataTag || ''),
-      trial2DataTag: (trial2 === 'NA' || trial2 === '') ? '' : (trial2DataTag || ''),
-      missingDependenciesTrial1: [],
-      missingDependenciesTrial2: [],
-      canCalculateTrial1: !isFormulaTrial1, // Can calculate if it's not a formula
-      canCalculateTrial2: !isFormulaTrial2 // Can calculate if it's not a formula
+      trial2Value: expectedTrial2 || undefined
     };
   }
 
+  private getCellText(cell: Element): string {
+    return cell.textContent?.trim() || '';
+  }
 
   private cleanLabel(label: string): string {
     // Remove leading numbers and letters (like "1ba", "2a", etc.)
@@ -144,28 +144,6 @@ export class CSVParser {
   private cleanSubsectionTitle(subsection: string): string {
     // Remove the leading section identifier (like "1b ", "2a ", etc.) from subsection titles
     return subsection.replace(/^\d+[a-z]\s*/, '').trim();
-  }
-
-  private parseCSVLine(line: string): string[] {
-    const result: string[] = [];
-    let current = '';
-    let inQuotes = false;
-
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === ',' && !inQuotes) {
-        result.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    
-    result.push(current.trim());
-    return result;
   }
 
   private parseNumericValue(value: string): number | undefined {
