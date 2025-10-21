@@ -41,7 +41,7 @@ export class FormulaEngine {
     });
     
     // Handle range notation like F43:G43 (convert to individual values)
-    jsFormula = jsFormula.replace(/([A-Z]+\d+):([A-Z]+\d+)/g, (_match, start, end) => {
+    jsFormula = jsFormula.replace(/([A-Z]+\d+):([A-Z]+\d+)/g, (_match, start) => {
       // For ranges, we'll just use the start value for now
       // In a full implementation, this would expand to all cells in the range
       return start;
