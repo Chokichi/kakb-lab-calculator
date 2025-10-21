@@ -112,7 +112,7 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
                 <input
                   type="number"
                   step="any"
-                  value={row.studentValueTrial1 || ''}
+                  value={row.studentValueTrial1 !== null ? row.studentValueTrial1 : ''}
                   onChange={handleInputChange('trial1')}
                   placeholder={getPlaceholder()}
                   disabled={!row.shouldAllowInput}
@@ -137,7 +137,7 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
                 <input
                   type="number"
                   step="any"
-                  value={row.studentValueTrial2 || ''}
+                  value={row.studentValueTrial2 !== null ? row.studentValueTrial2 : ''}
                   onChange={handleInputChange('trial2')}
                   placeholder={getPlaceholder()}
                   disabled={!row.shouldAllowInput}
