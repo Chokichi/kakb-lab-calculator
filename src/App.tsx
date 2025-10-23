@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     if (rows.length === 0) {
         // Load the formulas CSV for dynamic calculations
-        fetch('/Titration of a Diprotic Acid.csv')
+        fetch('/KaKb Key Calculator Formulas.csv')
         .then(response => response.text())
         .then(content => loadData(content))
         .catch(error => {
