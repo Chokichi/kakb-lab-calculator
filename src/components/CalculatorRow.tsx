@@ -110,49 +110,52 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
       <div className={`row-inputs ${isSingleColumn ? 'single-column' : ''}`}>
         {row.trial1DataTag && (
           <div className="trial-inputs">
-            <div className="trial-label">Trial 1</div>
             <div className="trial-input-wrapper">
-              <div className="input-container">
-                {row.entryType === 'Choice' ? (
-                  <select
-                    value={row.studentChoiceTrial1 || ''}
-                    onChange={handleChoiceChange('trial1')}
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial1')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  >
-                    <option value="">Select option...</option>
-                    {row.choiceOptionsTrial1?.map((option, index) => (
-                      <option key={index} value={option}>{option}</option>
-                    ))}
-                  </select>
-                ) : row.entryType === 'Text' ? (
-                  <input
-                    type="text"
-                    value={row.studentTextTrial1 || ''}
-                    onChange={handleTextChange('trial1')}
-                    placeholder="Enter text..."
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial1')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  />
-                ) : (
-                  <input
-                    type="number"
-                    step="any"
-                    value={row.studentValueTrial1 !== null ? row.studentValueTrial1 : ''}
-                    onChange={handleInputChange('trial1')}
-                    placeholder={getPlaceholder()}
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial1')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  />
-                )}
-                {showTooltip.trial === 'trial1' && getTooltipContent('trial1')}
-              </div>
+              {row.trial1HasInput ? (
+                <div className="input-container">
+                  {row.entryType === 'Choice' ? (
+                    <select
+                      value={row.studentChoiceTrial1 || ''}
+                      onChange={handleChoiceChange('trial1')}
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial1')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    >
+                      <option value="">Select option...</option>
+                      {row.choiceOptionsTrial1?.map((option, index) => (
+                        <option key={index} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : row.entryType === 'Text' ? (
+                    <input
+                      type="text"
+                      value={row.studentTextTrial1 || ''}
+                      onChange={handleTextChange('trial1')}
+                      placeholder="Enter text..."
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial1')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    />
+                  ) : (
+                    <input
+                      type="number"
+                      step="any"
+                      value={row.studentValueTrial1 !== null ? row.studentValueTrial1 : ''}
+                      onChange={handleInputChange('trial1')}
+                      placeholder={getPlaceholder()}
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial1')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    />
+                  )}
+                  {showTooltip.trial === 'trial1' && getTooltipContent('trial1')}
+                </div>
+              ) : (
+                <div className="input-placeholder"></div>
+              )}
               <div className="trial-status">
                 {getStatusIcon('trial1')}
               </div>
@@ -162,49 +165,52 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
         
         {row.trial2DataTag && (
           <div className="trial-inputs">
-            <div className="trial-label">Trial 2</div>
             <div className="trial-input-wrapper">
-              <div className="input-container">
-                {row.entryType === 'Choice' ? (
-                  <select
-                    value={row.studentChoiceTrial2 || ''}
-                    onChange={handleChoiceChange('trial2')}
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial2')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  >
-                    <option value="">Select option...</option>
-                    {row.choiceOptionsTrial2?.map((option, index) => (
-                      <option key={index} value={option}>{option}</option>
-                    ))}
-                  </select>
-                ) : row.entryType === 'Text' ? (
-                  <input
-                    type="text"
-                    value={row.studentTextTrial2 || ''}
-                    onChange={handleTextChange('trial2')}
-                    placeholder="Enter text..."
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial2')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  />
-                ) : (
-                  <input
-                    type="number"
-                    step="any"
-                    value={row.studentValueTrial2 !== null ? row.studentValueTrial2 : ''}
-                    onChange={handleInputChange('trial2')}
-                    placeholder={getPlaceholder()}
-                    disabled={!row.shouldAllowInput}
-                    className={getInputClassName('trial2')}
-                    onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
-                    onMouseLeave={() => setShowTooltip({ trial: null })}
-                  />
-                )}
-                {showTooltip.trial === 'trial2' && getTooltipContent('trial2')}
-              </div>
+              {row.trial2HasInput ? (
+                <div className="input-container">
+                  {row.entryType === 'Choice' ? (
+                    <select
+                      value={row.studentChoiceTrial2 || ''}
+                      onChange={handleChoiceChange('trial2')}
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial2')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    >
+                      <option value="">Select option...</option>
+                      {row.choiceOptionsTrial2?.map((option, index) => (
+                        <option key={index} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : row.entryType === 'Text' ? (
+                    <input
+                      type="text"
+                      value={row.studentTextTrial2 || ''}
+                      onChange={handleTextChange('trial2')}
+                      placeholder="Enter text..."
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial2')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    />
+                  ) : (
+                    <input
+                      type="number"
+                      step="any"
+                      value={row.studentValueTrial2 !== null ? row.studentValueTrial2 : ''}
+                      onChange={handleInputChange('trial2')}
+                      placeholder={getPlaceholder()}
+                      disabled={!row.shouldAllowInput}
+                      className={getInputClassName('trial2')}
+                      onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
+                      onMouseLeave={() => setShowTooltip({ trial: null })}
+                    />
+                  )}
+                  {showTooltip.trial === 'trial2' && getTooltipContent('trial2')}
+                </div>
+              ) : (
+                <div className="input-placeholder"></div>
+              )}
               <div className="trial-status">
                 {getStatusIcon('trial2')}
               </div>

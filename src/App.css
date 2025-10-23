@@ -410,6 +410,172 @@
   box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
 }
 
+.input-placeholder {
+  height: 40px;
+  width: 100%;
+  /* Invisible placeholder to maintain column alignment */
+  visibility: hidden;
+}
+
+/* Restoration Prompt Styles */
+.restoration-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  /* Ensure it's always centered in the viewport */
+  transform: translateZ(0);
+  /* Prevent background scrolling */
+  overflow: hidden;
+  /* Force viewport centering */
+  height: 100vh;
+  width: 100vw;
+  /* Modern centering with fallback */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Use CSS Grid for better centering if supported */
+@supports (display: grid) {
+  .restoration-overlay {
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* Lock body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.restoration-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  /* Ensure it's always visible */
+  min-height: 200px;
+  /* Force viewport centering */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.restoration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.restoration-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: #f8f9fa;
+}
+
+.restoration-content {
+  padding: 1.5rem;
+}
+
+.restoration-content p {
+  margin: 0 0 1rem 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.saved-info {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  border-left: 4px solid #007bff;
+  color: #333;
+}
+
+.saved-info strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.restoration-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.restoration-actions .btn {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+  transform: translateY(-1px);
+}
+
+.restoration-note {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+.restoration-note small {
+  color: #666;
+  font-style: italic;
+}
+
 .trial-status {
   font-size: 1rem;
   min-width: 20px;

@@ -23,6 +23,8 @@ export interface CalculationRow {
   trial2Value?: number; // reference value from CSV
   trial1DataTag: string; // Data tag for trial 1 (e.g., "F4", "G5")
   trial2DataTag: string; // Data tag for trial 2 (e.g., "F4", "G5")
+  trial1HasInput: boolean; // Whether trial 1 should show an input box (not NA)
+  trial2HasInput: boolean; // Whether trial 2 should show an input box (not NA)
   missingDependenciesTrial1: string[]; // Data tags that need values for trial 1
   missingDependenciesTrial2: string[]; // Data tags that need values for trial 2
   canCalculateTrial1: boolean; // Whether trial 1 can be calculated
@@ -60,4 +62,7 @@ export interface CalculatorActions {
   checkWork: (subsectionId: string) => void;
   resetSubsection: (subsectionId: string) => void;
   switchCalculator: (calculator: any) => void; // Added for calculator switching
+  saveToLocalStorage: () => void; // Save current state to local storage
+  restoreFromLocalStorage: () => void; // Restore state from local storage
+  clearLocalStorage: () => void; // Clear saved data
 }

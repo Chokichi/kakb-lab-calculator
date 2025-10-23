@@ -3,6 +3,7 @@ import { CalculationRow, CalculatorState, CalculatorActions } from '../types';
 import { HeaderBasedCSVParser } from '../utils/headerBasedCsvParser';
 import { FormulaEngine } from '../utils/formulaEngine';
 import { CalculatorConfig } from '../config/calculators';
+import { LocalStorageManager } from '../utils/localStorage';
 
 type CalculatorStore = CalculatorState & CalculatorActions;
 
@@ -255,6 +256,11 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       // Then recalculate all expected values based on current student inputs
       const recalculatedRows = calculateExpectedValues(updatedRows);
 
+      // Auto-save to local storage
+      setTimeout(() => {
+        LocalStorageManager.saveData(recalculatedRows, get().title);
+      }, 100);
+
       // Don't check correctness here - wait for "Check Work" button
       return { rows: recalculatedRows };
     });
@@ -294,6 +300,11 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       // Then recalculate all expected values based on current student inputs
       const recalculatedRows = calculateExpectedValues(updatedRows);
 
+      // Auto-save to local storage
+      setTimeout(() => {
+        LocalStorageManager.saveData(recalculatedRows, get().title);
+      }, 100);
+
       // Don't check correctness here - wait for "Check Work" button
       return { rows: recalculatedRows };
     });
@@ -332,6 +343,11 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
 
       // Then recalculate all expected values based on current student inputs
       const recalculatedRows = calculateExpectedValues(updatedRows);
+
+      // Auto-save to local storage
+      setTimeout(() => {
+        LocalStorageManager.saveData(recalculatedRows, get().title);
+      }, 100);
 
       // Don't check correctness here - wait for "Check Work" button
       return { rows: recalculatedRows };
@@ -509,6 +525,44 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
             isLoading: false 
           });
         });
+    },
+
+    saveToLocalStorage: () => {
+      const { rows, title } = get();
+      LocalStorageManager.saveData(rows, title);
+    },
+
+    restoreFromLocalStorage: () => {
+      const savedData = LocalStorageManager.loadData();
+      if (savedData) {
+        set((state) => {
+          // Merge saved student inputs with current rows
+          const updatedRows = state.rows.map(row => {
+            const savedRow = savedData.rows.find(saved => saved.id === row.id);
+            if (savedRow) {
+              return {
+                ...row,
+                studentValueTrial1: savedRow.studentValueTrial1,
+                studentValueTrial2: savedRow.studentValueTrial2,
+                studentChoiceTrial1: savedRow.studentChoiceTrial1,
+                studentChoiceTrial2: savedRow.studentChoiceTrial2,
+                studentTextTrial1: savedRow.studentTextTrial1,
+                studentTextTrial2: savedRow.studentTextTrial2,
+              };
+            }
+            return row;
+          });
+
+          // Recalculate all expected values with restored inputs
+          const recalculatedRows = calculateExpectedValues(updatedRows);
+          
+          return { rows: recalculatedRows };
+        });
+      }
+    },
+
+    clearLocalStorage: () => {
+      LocalStorageManager.clearData();
     },
 
 }));

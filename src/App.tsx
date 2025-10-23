@@ -3,8 +3,10 @@ import { useCalculatorStore } from './store/calculatorStore';
 import { CalculatorGrid } from './components/CalculatorGrid';
 import { SummaryPanel } from './components/SummaryPanel';
 import { CalculatorSelector } from './components/CalculatorSelector';
+import { RestorationPrompt } from './components/RestorationPrompt';
 import { getCalculatorConfigFromURL, onURLChange } from './utils/urlUtils';
 import { CalculatorConfig } from './config/calculators';
+import { LocalStorageManager } from './utils/localStorage';
 import './App.css';
 
 function App() {
@@ -20,9 +22,12 @@ function App() {
     checkWork,
     resetSubsection,
     switchCalculator,
+    restoreFromLocalStorage,
+    clearLocalStorage,
   } = useCalculatorStore();
 
   const [currentCalculator, setCurrentCalculator] = useState<CalculatorConfig>(getCalculatorConfigFromURL());
+  const [showRestorationPrompt, setShowRestorationPrompt] = useState(false);
 
   // Load calculator data on app start and when calculator changes
   useEffect(() => {
@@ -37,9 +42,31 @@ function App() {
     return cleanup;
   }, []);
 
+  // Check for saved data on app start
+  useEffect(() => {
+    if (!isLoading && rows.length > 0 && LocalStorageManager.hasSavedData()) {
+      setShowRestorationPrompt(true);
+    }
+  }, [isLoading, rows.length]);
+
   // Handle calculator switching
   const handleCalculatorChange = (calculator: CalculatorConfig) => {
     setCurrentCalculator(calculator);
+  };
+
+  // Handle restoration prompt actions
+  const handleRestore = () => {
+    restoreFromLocalStorage();
+    setShowRestorationPrompt(false);
+  };
+
+  const handleStartFresh = () => {
+    clearLocalStorage();
+    setShowRestorationPrompt(false);
+  };
+
+  const handleClosePrompt = () => {
+    setShowRestorationPrompt(false);
   };
 
   if (error) {
@@ -106,6 +133,14 @@ function App() {
           />
         </div>
       </div>
+      
+      {showRestorationPrompt && (
+        <RestorationPrompt
+          onRestore={handleRestore}
+          onStartFresh={handleStartFresh}
+          onClose={handleClosePrompt}
+        />
+      )}
     </div>
   );
 }

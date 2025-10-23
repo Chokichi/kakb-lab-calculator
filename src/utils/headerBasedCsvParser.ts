@@ -164,8 +164,13 @@ export class HeaderBasedCSVParser {
         const dataRef = columns[dataRefIndex] || '';
         const value = columns[trialIndex2] || '';
         
+        // Always create trial data if dataRef exists, but mark NA values as empty
         if (dataRef && dataRef.trim() !== '') {
-          trialData[`trial${trialIndex + 1}`] = { dataRef, value };
+          const isNA = value.trim().toUpperCase() === 'NA';
+          trialData[`trial${trialIndex + 1}`] = { 
+            dataRef, 
+            value: isNA ? '' : value 
+          };
         }
       }
     });
@@ -227,6 +232,8 @@ export class HeaderBasedCSVParser {
       trial2Value: expectedValues.trial2 || undefined,
       trial1DataTag: trialData.trial1?.dataRef || '',
       trial2DataTag: trialData.trial2?.dataRef || '',
+      trial1HasInput: (trialData.trial1?.dataRef && trialData.trial1?.value !== '') || false,
+      trial2HasInput: (trialData.trial2?.dataRef && trialData.trial2?.value !== '') || false,
       missingDependenciesTrial1: [],
       missingDependenciesTrial2: [],
       canCalculateTrial1: !formula.trial1,
