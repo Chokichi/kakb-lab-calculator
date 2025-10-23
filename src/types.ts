@@ -27,6 +27,14 @@ export interface CalculationRow {
   missingDependenciesTrial2: string[]; // Data tags that need values for trial 2
   canCalculateTrial1: boolean; // Whether trial 1 can be calculated
   canCalculateTrial2: boolean; // Whether trial 2 can be calculated
+  // New fields for Choice data type
+  entryType: string; // "Data", "Calculated", or "Choice"
+  choiceOptionsTrial1?: string[]; // Options for trial 1 choice (e.g., ["First", "Second"])
+  choiceOptionsTrial2?: string[]; // Options for trial 2 choice
+  studentChoiceTrial1: string | null; // Selected choice for trial 1
+  studentChoiceTrial2: string | null; // Selected choice for trial 2
+  // Column headers for flexible input columns
+  columnHeaders?: { trial1: string; trial2: string };
 }
 
 export interface CalculatorState {
@@ -40,6 +48,7 @@ export interface CalculatorState {
 
 export interface CalculatorActions {
   setStudentValue: (id: string, trial: 'trial1' | 'trial2', value: number | null) => void;
+  setStudentChoice: (id: string, trial: 'trial1' | 'trial2', choice: string | null) => void;
   setTolerance: (tolerance: number) => void;
   resetAll: () => void;
   loadData: (csvData: string) => void;

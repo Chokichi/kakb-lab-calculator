@@ -103,7 +103,7 @@ export class FormulaEngine {
   /**
    * Evaluates a formula with given inputs
    */
-  evaluateFormula(formula: string, inputs: { [key: string]: number }): number | null {
+  evaluateFormula(formula: string, inputs: { [key: string]: number | string }): number | null {
     try {
       let jsFormula = this.convertFormula(formula);
       
@@ -111,7 +111,10 @@ export class FormulaEngine {
       // Replace cell references with actual values
       Object.keys(inputs).forEach(cellRef => {
         const regex = new RegExp(cellRef, 'g');
-        jsFormula = jsFormula.replace(regex, inputs[cellRef].toString());
+        const value = inputs[cellRef];
+        // For string values (choices), wrap in quotes; for numbers, use as-is
+        const replacement = typeof value === 'string' ? `"${value}"` : value.toString();
+        jsFormula = jsFormula.replace(regex, replacement);
       });
       
       

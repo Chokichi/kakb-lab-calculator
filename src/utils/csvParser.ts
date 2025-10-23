@@ -25,9 +25,26 @@ export class CSVParser {
       if (!line) continue;
 
       const columns = this.parseCSVLine(line);
-      if (columns.length < 9) continue;
+      if (columns.length < 8) continue;
 
-      const [section, subsection, trial1DataTag, trial2DataTag, label, trial1, trial2, unit, entryType] = columns;
+      const [section, subsection, trial1DataTag, trial2DataTag, label, column1, unit, entryType] = columns;
+      
+      // Skip rows where trial1DataTag is empty (no data tag means no input)
+      if (!trial1DataTag || trial1DataTag.trim() === '') continue;
+      
+      // Parse the new flexible column format: "Input 1; Trial 1" or "Input 1; Input 2"
+      const columnParts = column1.split(';').map(part => part.trim());
+      const inputCount = columnParts.length;
+      
+      // For now, handle up to 2 inputs (can be extended later)
+      const trial1 = inputCount > 0 ? columnParts[0] : 'NA';
+      const trial2 = inputCount > 1 ? columnParts[1] : 'NA';
+      
+      // Extract column headers (labels for the input columns)
+      const columnHeaders = {
+        trial1: inputCount > 0 ? columnParts[0] : '',
+        trial2: inputCount > 1 ? columnParts[1] : ''
+      };
 
       // Handle section headers
       if (section && !subsection && !trial1DataTag && !trial2DataTag && !label) {
@@ -42,10 +59,15 @@ export class CSVParser {
         continue;
       }
 
-      // Skip header row
-      if (section === 'Section') {
-        continue;
-      }
+        // Skip header row
+        if (section === 'Section') {
+          continue;
+        }
+        
+        // Skip rows where column1 is empty or just contains labels
+        if (!column1 || column1.trim() === '') {
+          continue;
+        }
 
       // Skip rows without labels or with empty labels
       if (!label || label.trim() === '') {
@@ -66,7 +88,8 @@ export class CSVParser {
         currentSection,
         currentSubsection,
         trial1DataTag,
-        trial2DataTag
+        trial2DataTag,
+        columnHeaders
       );
 
       if (row) {
@@ -87,7 +110,8 @@ export class CSVParser {
     section: string,
     subsection: string,
     trial1DataTag: string,
-    trial2DataTag: string
+    trial2DataTag: string,
+    columnHeaders?: { trial1: string; trial2: string }
   ): CalculationRow | null {
     // Check if this is a formula (starts with =)
     const isFormulaTrial1 = trial1.startsWith('=');
@@ -101,10 +125,18 @@ export class CSVParser {
     // const cleanLabel = this.cleanLabel(label).toLowerCase();
     
     // Determine if this is a direct input based on entry type
-    const isDirectInput = entryType === 'Data';
+    const isDirectInput = entryType === 'Data' || entryType === 'Choice';
     
     // Students should be able to enter both direct inputs and calculated values for verification
-    const shouldAllowInput = entryType === 'Data' || entryType === 'Calculated';
+    const shouldAllowInput = entryType === 'Data' || entryType === 'Calculated' || entryType === 'Choice';
+
+    // Parse choice options for Choice entries
+    const choiceOptionsTrial1 = entryType === 'Choice' && trial1 && trial1.includes(';') 
+      ? trial1.split(';').map(opt => opt.trim()) 
+      : undefined;
+    const choiceOptionsTrial2 = entryType === 'Choice' && trial2 && trial2.includes(';') 
+      ? trial2.split(';').map(opt => opt.trim()) 
+      : undefined;
 
     return {
       id,
@@ -137,7 +169,15 @@ export class CSVParser {
       missingDependenciesTrial1: [],
       missingDependenciesTrial2: [],
       canCalculateTrial1: !isFormulaTrial1, // Can calculate if it's not a formula
-      canCalculateTrial2: !isFormulaTrial2 // Can calculate if it's not a formula
+      canCalculateTrial2: !isFormulaTrial2, // Can calculate if it's not a formula
+      // New fields for Choice data type
+      entryType: entryType,
+      choiceOptionsTrial1,
+      choiceOptionsTrial2,
+      studentChoiceTrial1: null,
+      studentChoiceTrial2: null,
+      // Column headers for flexible input columns
+      columnHeaders: columnHeaders
     };
   }
 

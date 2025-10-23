@@ -41,7 +41,7 @@ function extractDependencies(formula: string): string[] {
 }
 
 // Helper function to check if all dependencies are available
-function checkDependencies(dependencies: string[], availableValues: { [key: string]: number }): { canCalculate: boolean; missing: string[] } {
+function checkDependencies(dependencies: string[], availableValues: { [key: string]: number | string }): { canCalculate: boolean; missing: string[] } {
   const missing = dependencies.filter(dep => !(dep in availableValues));
   return {
     canCalculate: missing.length === 0,
@@ -57,8 +57,8 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
       return row; // No formula, keep existing values
     }
 
-    // Create input map from student values only
-    const inputs: { [key: string]: number } = {};
+    // Create input map from student values and choices
+    const inputs: { [key: string]: number | string } = {};
     
     // Map student inputs to data tags
     rows.forEach(r => {
@@ -67,6 +67,13 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
       }
       if (r.studentValueTrial2 !== null && r.trial2DataTag) {
         inputs[r.trial2DataTag] = r.studentValueTrial2;
+      }
+      // Also include choice values
+      if (r.studentChoiceTrial1 !== null && r.trial1DataTag) {
+        inputs[r.trial1DataTag] = r.studentChoiceTrial1;
+      }
+      if (r.studentChoiceTrial2 !== null && r.trial2DataTag) {
+        inputs[r.trial2DataTag] = r.studentChoiceTrial2;
       }
     });
 
@@ -127,7 +134,7 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
     }
 
     // Create input map including both student values and calculated values
-    const inputs: { [key: string]: number } = {};
+    const inputs: { [key: string]: number | string } = {};
     
     updatedRows.forEach(r => {
       if (r.studentValueTrial1 !== null && r.trial1DataTag) {
@@ -135,6 +142,13 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
       }
       if (r.studentValueTrial2 !== null && r.trial2DataTag) {
         inputs[r.trial2DataTag] = r.studentValueTrial2;
+      }
+      // Also include choice values
+      if (r.studentChoiceTrial1 !== null && r.trial1DataTag) {
+        inputs[r.trial1DataTag] = r.studentChoiceTrial1;
+      }
+      if (r.studentChoiceTrial2 !== null && r.trial2DataTag) {
+        inputs[r.trial2DataTag] = r.studentChoiceTrial2;
       }
       // Also include calculated values that are available
       if (r.computedValueTrial1 !== null && r.trial1DataTag) {
@@ -218,6 +232,45 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
           return { 
             ...row, 
             [`studentValue${trial === 'trial1' ? 'Trial1' : 'Trial2'}`]: value,
+            isChecking: false,
+            isChecked: false
+          };
+        }
+        // Reset checked state for all calculated rows in the same subsection
+        // (but not for input rows like pH)
+        if (row.subsection === subsectionId && !row.isDirectInput) {
+          return {
+            ...row,
+            isChecked: false,
+            isCorrectTrial1: null,
+            isCorrectTrial2: null,
+            isCloseTrial1: null,
+            isCloseTrial2: null
+          };
+        }
+        return row;
+      });
+
+      // Then recalculate all expected values based on current student inputs
+      const recalculatedRows = calculateExpectedValues(updatedRows);
+
+      // Don't check correctness here - wait for "Check Work" button
+      return { rows: recalculatedRows };
+    });
+  },
+
+  setStudentChoice: (id: string, trial: 'trial1' | 'trial2', choice: string | null) => {
+    set((state) => {
+      // Find the row being updated to get its subsection
+      const updatedRow = state.rows.find(row => row.id === id);
+      const subsectionId = updatedRow?.subsection;
+
+      // First update the student choice and reset checked state for the entire subsection
+      const updatedRows = state.rows.map((row) => {
+        if (row.id === id) {
+          return { 
+            ...row, 
+            [`studentChoice${trial === 'trial1' ? 'Trial1' : 'Trial2'}`]: choice,
             isChecking: false,
             isChecked: false
           };

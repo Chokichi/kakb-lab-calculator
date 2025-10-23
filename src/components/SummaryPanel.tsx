@@ -1,14 +1,17 @@
 import React from 'react';
 import { CalculationRow } from '../types';
+import { PDFButton } from './PDFButton';
 
 interface SummaryPanelProps {
   rows: CalculationRow[];
   onReset: () => void;
+  title: string;
 }
 
 export const SummaryPanel: React.FC<SummaryPanelProps> = ({
   rows,
   onReset,
+  title,
 }) => {
   const totalRows = rows.length;
   const completedRows = rows.filter(row => 
@@ -36,9 +39,12 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
     <div className="summary-panel">
       <div className="summary-header">
         <h2>Lab Progress Summary</h2>
-        <button className="reset-button" onClick={onReset}>
-          Reset All
-        </button>
+        <div className="summary-actions">
+          <PDFButton rows={rows} title={title} />
+          <button className="reset-button" onClick={onReset}>
+            Reset All
+          </button>
+        </div>
       </div>
       
       <div className="summary-stats">
@@ -72,14 +78,6 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
         <div className="stat-item">
           <span className="stat-label">Pending:</span>
           <span className="stat-value pending">{pendingRows}</span>
-        </div>
-      </div>
-      
-      <div className="tolerance-info">
-        <div className="stat-item">
-          <span className="stat-label">Tolerance:</span>
-          <span className="stat-value">10%</span>
-          <span className="stat-detail">(Fixed)</span>
         </div>
       </div>
     </div>

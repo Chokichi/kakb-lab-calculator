@@ -11,6 +11,7 @@ function App() {
     isLoading,
     error,
     setStudentValue,
+    setStudentChoice,
     resetAll,
     loadData,
     checkWork,
@@ -20,8 +21,8 @@ function App() {
   // Load default data on app start
   useEffect(() => {
     if (rows.length === 0) {
-      // Load the formulas CSV for dynamic calculations
-      fetch('/KaKb Key Calculator Formulas.csv')
+        // Load the formulas CSV for dynamic calculations
+        fetch('/Titration of a Diprotic Acid.csv')
         .then(response => response.text())
         .then(content => loadData(content))
         .catch(error => {
@@ -157,16 +158,18 @@ Average the four values for Keq,9.13E-06,,`);
           <CalculatorGrid 
             rows={rows} 
             onValueChange={setStudentValue}
+            onChoiceChange={setStudentChoice}
             onCheckWork={checkWork}
             onResetSubsection={resetSubsection}
           />
         </div>
         
         <div className="sidebar">
-          <SummaryPanel
-            rows={rows}
-            onReset={resetAll}
-          />
+            <SummaryPanel
+              rows={rows}
+              onReset={resetAll}
+              title={title}
+            />
         </div>
       </div>
     </div>
