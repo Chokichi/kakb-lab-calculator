@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 import { CalculationRow, CalculatorState, CalculatorActions } from '../types';
-import { CSVParser } from '../utils/csvParser';
+import { HeaderBasedCSVParser } from '../utils/headerBasedCsvParser';
 import { FormulaEngine } from '../utils/formulaEngine';
+import { CalculatorConfig } from '../config/calculators';
 
 type CalculatorStore = CalculatorState & CalculatorActions;
 
-const csvParser = new CSVParser();
+const csvParser = new HeaderBasedCSVParser();
 const formulaEngine = FormulaEngine.getInstance();
 
 // Helper function to check if student value is within tolerance
@@ -298,6 +299,45 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     });
   },
 
+  setStudentText: (id: string, trial: 'trial1' | 'trial2', text: string | null) => {
+    set((state) => {
+      // Find the row being updated to get its subsection
+      const updatedRow = state.rows.find(row => row.id === id);
+      const subsectionId = updatedRow?.subsection;
+
+      // First update the student text and reset checked state for the entire subsection
+      const updatedRows = state.rows.map((row) => {
+        if (row.id === id) {
+          return { 
+            ...row, 
+            [`studentText${trial === 'trial1' ? 'Trial1' : 'Trial2'}`]: text,
+            isChecking: false,
+            isChecked: false
+          };
+        }
+        // Reset checked state for all calculated rows in the same subsection
+        // (but not for input rows like pH)
+        if (row.subsection === subsectionId && !row.isDirectInput) {
+          return {
+            ...row,
+            isChecked: false,
+            isCorrectTrial1: null,
+            isCorrectTrial2: null,
+            isCloseTrial1: null,
+            isCloseTrial2: null
+          };
+        }
+        return row;
+      });
+
+      // Then recalculate all expected values based on current student inputs
+      const recalculatedRows = calculateExpectedValues(updatedRows);
+
+      // Don't check correctness here - wait for "Check Work" button
+      return { rows: recalculatedRows };
+    });
+  },
+
     setTolerance: (tolerance: number) => {
       set({ tolerance });
       // Recheck all values with new tolerance
@@ -445,6 +485,30 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
         return row;
       }),
     }));
-  },
+    },
+
+    switchCalculator: (calculator: CalculatorConfig) => {
+      set({ isLoading: true, error: null });
+      
+      // Load the new calculator's CSV data
+      fetch(calculator.csvFile)
+        .then(response => response.text())
+        .then(content => {
+          const { rows, title, tolerance1, tolerance2 } = csvParser.parseCSV(content);
+          set({ 
+            rows, 
+            title,
+            tolerance: tolerance1,
+            toleranceClose: tolerance2,
+            isLoading: false 
+          });
+        })
+        .catch(error => {
+          set({ 
+            error: error instanceof Error ? error.message : 'Failed to load calculator data',
+            isLoading: false 
+          });
+        });
+    },
 
 }));

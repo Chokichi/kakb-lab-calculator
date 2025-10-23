@@ -1,0 +1,59 @@
+Title,Determination of Ka and Kb,Tolerance 1,0.1,Tolerance 2,0.15,,,
+Section,Subsection,DataRef1,DataRef2,Label,Trial 1,Trial 2,Unit,Entry Type
+The equilibrium constant of acetic acid,,,,,,,,
+,pH of 0.50 M HC2H3O2,,,,,,,
+,,F5,G5,pH of 0.50 M HC2H3O2,2.56,2.56,pH,Data
+,,F6,G6,[H^+],=10^-F5,=10^-G5,M,Calculated
+,,F7,G7,[C2H3O2^-],=F6,=G6,M,Calculated
+,,F8,G8,[HC2H3O2],0.5,0.5,M,Data
+,,F9,G9,Keq,=F6*F7/F8,=G6*G7/G8,Unitless,Calculated
+,1c pH of 0.20 M HC2H3O2,,,,,,,
+,,F11,G11,pH of solution,2.56,2.55,pH,Data
+,,F12,G12,a [H^+],=10^-F11,=10^-G11,M,Calculated
+,,F13,G13,b [C2H3O2^-],=F12,=G12,M,Calculated
+,,F14,G14,c [HC2H3O2],0.2,0.2,M,Data
+,,F15,G15,d Keq,=F12*F13/F14,=G12*G13/G14,Unitless,Calculated
+,1d 0.50 M HC2H3O2 and solid NaC2H3O2,,,,,,,
+,,F17,G17,grams of NaC2H3O2,0.5293,0.5234,g,Data
+,,F18,G18,pH of mixture,4.22,4.36,pH,Data
+,,F19,G19, [H^+],=10^-F18,=10^-G18,M,Calculated
+,,F20,G20,[C2H3O2^-],=F17/82.03/0.02,=G17/82.03/0.02,M,Calculated
+,,F21,G21,[HC2H3O2],0.5,0.5,M,Data
+,,F22,G22,Keq,=F19*F20/F21,=G19*G20/G21,Unitless,Calculated
+,,F23,G23,Average the six values for Keq,=(F22+G22+F15+G15+G9+F9)/6,NA,Unitless,Calculated
+,,F24,G24,Calculate your percent error if the known Keq  = 1.76x10^-5,=(0.0000176-F23)/0.0000176,NA,%,Calculated
+Keq of an unknown weak acid,,,,,,,,
+,2a pH of 0.10M Unknown Acid,,,,,,,
+,,F27,G27,Unknown #:,NA,1,Unitless,Data
+,,F28,G28,pH,3.03,3.03,pH,Data
+,,F29,G29,[H^+],=10^-F28,=10^-G28,M,Calculated
+,,F30,G30,[A^-],=F29,=G29,M,Calculated
+,,F31,G31,[HA],0.1,0.1,M,Data
+,,F32,G32,Keq,=F29*F30/F31,=G29*G30/F31,Unitless,Calculated
+,2b 5 mL of 0.1M NaOH plus 25 mL of Unknown Acid,,,,,,,
+,,F34,G34,pH of mixture,4.04,4.1,pH,Data
+,,F35,G35,[H^+],=10^-F34,=10^-G34,M,Calculated
+,,F36,G36,[A^-],=0.005*0.1/0.03,=0.005*0.1/0.03,M,Calculated
+,,F37,G37,[HA],=(0.1*0.025-0.1*0.005)/0.03,=(0.1*0.025-0.1*0.005)/0.03,M,Calculated
+,,F38,G38,Keq,=F35*F36/F37,=G35*G36/G37,Unitless,Calculated
+,2c 15 mL of 0.1M NaOH plus 30 mL of Unknown Acid,,,,,,,
+,,F40,G40,a pH of mixture,4.54,4.64,pH,Data
+,,F41,G41,[H^+],=10^-F40,=10^-G40,M,Calculated
+,,F42,G42,[A^-],=0.015*0.1/0.045,=0.015*0.1/0.045,M,Calculated
+,,F43,G43,[HA],=0.015*0.1/0.045,=0.015*0.1/0.045,M,Calculated
+,,F44,G44,Keq,=F41*F42/F43,=G41*G42/G43,M,Calculated
+,,F45,G45,Average the six values for Keq,=(F44+G44+F38+G38+G32+F32)/6,NA,Unitless,Calculated
+The Equilibrium Constant of a Weak Base,,,,,,,,
+,3a pH of 0.50M Unknown Weak Base,,,,,,,
+,,F48,G48,a pH of 0.50M Unknown Weak Base,11.26,11.12,pH,Data
+,,F49,G49,[OH^],=10^-(14-F48),=10^-(14-G48),M,Calculated
+,,F50,G50,[HB^+],=F49,=G49,M,Calculated
+,,F51,G51,[B],0.5,0.5,M,Data
+,,F52,G52,Keq,=F49*F50/F51,=G49*G50/G51,Unitless,Calculated
+,3b 5 mL of 0.1M HCl plus 20 mL of 0.50 M Unknown Base,,,,,,,
+,,F54,G54,pH of mixture,10.4,10.4,pH,Data
+,,F55,G55,[OH^],=10^-(14-F54),=10^-(14-G54),M,Calculated
+,,F56,G56,[HB^+],=0.0005/0.025,=0.0005/0.025,M,Calculated
+,,F57,G57,[B],=0.0095/0.025,=0.0095/0.025,M,Calculated
+,,F58,G58,Keq,=F55*F56/F57,=G55*G56/G57,Unitless,Calculated
+,,F59,G59,Average the four values for Keq,=(F52+G52+F58+G58)/4,NA,Unitless,Calculated

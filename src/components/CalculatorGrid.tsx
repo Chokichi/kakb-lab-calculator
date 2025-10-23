@@ -7,6 +7,7 @@ interface CalculatorGridProps {
   rows: CalculationRow[];
   onValueChange: (id: string, trial: 'trial1' | 'trial2', value: number | null) => void;
   onChoiceChange: (id: string, trial: 'trial1' | 'trial2', choice: string | null) => void;
+  onTextChange: (id: string, trial: 'trial1' | 'trial2', text: string | null) => void;
   onCheckWork: (subsectionId: string) => void;
   onResetSubsection: (subsectionId: string) => void;
 }
@@ -15,6 +16,7 @@ export const CalculatorGrid: React.FC<CalculatorGridProps> = ({
   rows, 
   onValueChange, 
   onChoiceChange,
+  onTextChange,
   onCheckWork, 
   onResetSubsection 
 }) => {
@@ -81,6 +83,7 @@ export const CalculatorGrid: React.FC<CalculatorGridProps> = ({
                             row={row}
                             onValueChange={onValueChange}
                             onChoiceChange={onChoiceChange}
+                            onTextChange={onTextChange}
                             allRows={rows}
                             isSingleColumn={isSingleColumn}
                           />

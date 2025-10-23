@@ -33,6 +33,9 @@ export interface CalculationRow {
   choiceOptionsTrial2?: string[]; // Options for trial 2 choice
   studentChoiceTrial1: string | null; // Selected choice for trial 1
   studentChoiceTrial2: string | null; // Selected choice for trial 2
+  // Text value fields for Text entry type
+  studentTextTrial1: string | null; // Text value for trial 1
+  studentTextTrial2: string | null; // Text value for trial 2
   // Column headers for flexible input columns
   columnHeaders?: { trial1: string; trial2: string };
 }
@@ -49,10 +52,12 @@ export interface CalculatorState {
 export interface CalculatorActions {
   setStudentValue: (id: string, trial: 'trial1' | 'trial2', value: number | null) => void;
   setStudentChoice: (id: string, trial: 'trial1' | 'trial2', choice: string | null) => void;
+  setStudentText: (id: string, trial: 'trial1' | 'trial2', text: string | null) => void;
   setTolerance: (tolerance: number) => void;
   resetAll: () => void;
   loadData: (csvData: string) => void;
   recalculateAll: () => void;
   checkWork: (subsectionId: string) => void;
   resetSubsection: (subsectionId: string) => void;
+  switchCalculator: (calculator: any) => void; // Added for calculator switching
 }

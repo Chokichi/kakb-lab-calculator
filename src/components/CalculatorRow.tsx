@@ -5,11 +5,12 @@ interface CalculatorRowProps {
   row: CalculationRow;
   onValueChange: (id: string, trial: 'trial1' | 'trial2', value: number | null) => void;
   onChoiceChange: (id: string, trial: 'trial1' | 'trial2', choice: string | null) => void;
+  onTextChange: (id: string, trial: 'trial1' | 'trial2', text: string | null) => void;
   allRows: CalculationRow[]; // Add this to find dependent rows
   isSingleColumn?: boolean; // Whether this is a single-column layout
 }
 
-export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange, onChoiceChange, allRows, isSingleColumn = false }) => {
+export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange, onChoiceChange, onTextChange, allRows, isSingleColumn = false }) => {
   const [showTooltip, setShowTooltip] = useState<{ trial: 'trial1' | 'trial2' | null }>({ trial: null });
 
   const handleInputChange = (trial: 'trial1' | 'trial2') => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,11 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
   const handleChoiceChange = (trial: 'trial1' | 'trial2') => (e: React.ChangeEvent<HTMLSelectElement>) => {
     const choice = e.target.value === '' ? null : e.target.value;
     onChoiceChange(row.id, trial, choice);
+  };
+
+  const handleTextChange = (trial: 'trial1' | 'trial2') => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value === '' ? null : e.target.value;
+    onTextChange(row.id, trial, text);
   };
 
   // Helper function to find rows that correspond to missing dependencies
@@ -121,6 +127,17 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
                       <option key={index} value={option}>{option}</option>
                     ))}
                   </select>
+                ) : row.entryType === 'Text' ? (
+                  <input
+                    type="text"
+                    value={row.studentTextTrial1 || ''}
+                    onChange={handleTextChange('trial1')}
+                    placeholder="Enter text..."
+                    disabled={!row.shouldAllowInput}
+                    className={getInputClassName('trial1')}
+                    onMouseEnter={() => setShowTooltip({ trial: 'trial1' })}
+                    onMouseLeave={() => setShowTooltip({ trial: null })}
+                  />
                 ) : (
                   <input
                     type="number"
@@ -162,6 +179,17 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
                       <option key={index} value={option}>{option}</option>
                     ))}
                   </select>
+                ) : row.entryType === 'Text' ? (
+                  <input
+                    type="text"
+                    value={row.studentTextTrial2 || ''}
+                    onChange={handleTextChange('trial2')}
+                    placeholder="Enter text..."
+                    disabled={!row.shouldAllowInput}
+                    className={getInputClassName('trial2')}
+                    onMouseEnter={() => setShowTooltip({ trial: 'trial2' })}
+                    onMouseLeave={() => setShowTooltip({ trial: null })}
+                  />
                 ) : (
                   <input
                     type="number"

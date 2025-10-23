@@ -189,7 +189,7 @@ export class PDFGenerator {
         const value = row.studentValueTrial1 !== null ? row.studentValueTrial1.toString() : 'Not entered';
         const status = this.getStatusText(row.isCorrectTrial1, row.isCloseTrial1);
         
-        this.doc.text(`${value} ${status}`, valueX, this.currentY);
+        this.doc.text(`${status}${value}`, valueX, this.currentY);
       }
       
       // Unit
@@ -207,7 +207,7 @@ export class PDFGenerator {
         const trial1Value = row.studentValueTrial1 !== null ? row.studentValueTrial1.toString() : 'Not entered';
         const trial1Status = this.getStatusText(row.isCorrectTrial1, row.isCloseTrial1);
         
-        this.doc.text(`T1: ${trial1Value} ${trial1Status}`, trial1X, this.currentY);
+        this.doc.text(`${trial1Status}${trial1Value}`, trial1X, this.currentY);
       }
 
       // Trial 2 data
@@ -215,7 +215,7 @@ export class PDFGenerator {
         const trial2Value = row.studentValueTrial2 !== null ? row.studentValueTrial2.toString() : 'Not entered';
         const trial2Status = this.getStatusText(row.isCorrectTrial2, row.isCloseTrial2);
         
-        this.doc.text(`T2: ${trial2Value} ${trial2Status}`, trial2X, this.currentY);
+        this.doc.text(`${trial2Status}${trial2Value}`, trial2X, this.currentY);
       }
 
       // Unit
@@ -230,9 +230,9 @@ export class PDFGenerator {
   }
 
   private getStatusText(isCorrect: boolean | null, isClose: boolean | null): string {
-    if (isCorrect === true) return '✓';
-    if (isClose === true) return '~';
-    if (isCorrect === false) return '✗';
+    if (isCorrect === true) return 'O: ';
+    if (isClose === true) return '~: ';
+    if (isCorrect === false) return 'X: ';
     return '';
   }
 
@@ -288,7 +288,7 @@ export class PDFGenerator {
       const valueX = this.margin + 100;
       const unitX = this.margin + 150;
       
-      this.doc.text('Value', valueX, this.currentY);
+      this.doc.text('Value & Status', valueX, this.currentY);
       this.doc.text('Unit', unitX, this.currentY);
     } else {
       // Two-trial header
@@ -296,8 +296,8 @@ export class PDFGenerator {
       const trial2X = this.margin + 120;
       const unitX = this.margin + 160;
       
-      this.doc.text('Trial 1', trial1X, this.currentY);
-      this.doc.text('Trial 2', trial2X, this.currentY);
+      this.doc.text('Trial 1 & Status', trial1X, this.currentY);
+      this.doc.text('Trial 2 & Status', trial2X, this.currentY);
       this.doc.text('Unit', unitX, this.currentY);
     }
 

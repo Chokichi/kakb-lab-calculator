@@ -1,0 +1,12 @@
+Title,Advanced Lab with 3 Trials,Tolerance 1,0.1,Tolerance 2,0.15
+Section,Subsection,DataRef1,DataRef2,DataRef3,Label,Trial 1,Trial 2,Trial 3,Unit,Entry Type
+Data Collection,,,,,,,,,,
+,Measurements,,,,,,,,,
+,,F3,G3,H3,pH of solution,2.56,2.55,2.57,pH,Data
+,,F4,G4,H4,Temperature,25.0,25.1,24.9,°C,Data
+,,F5,G5,H5,Volume,100,100,100,mL,Data
+Calculations,,,,,,,,,,
+,Results,,,,,,,,,
+,,F7,G7,H7,[H^+],=10^-F3,=10^-G3,=10^-H3,M,Calculated
+,,F8,G8,H8,Average pH,=AVERAGE(F3:H3),NA,NA,pH,Calculated
+,,F9,G9,H9,Standard Deviation,=STDEV(F3:H3),NA,NA,pH,Calculated

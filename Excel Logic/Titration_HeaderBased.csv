@@ -1,0 +1,27 @@
+Title,Titration of a Diprotic Acid,Tolerance 1,0.1,Tolerance 2,0.15
+Section,Subsection,DataRef,Label,Trial 1,Unit,Entry Type
+Data Table,,,,,,
+,,F3,Mass of diprotic acid,0.12,g,Data
+,,F4,Concentration of NaOH,0.1,M,Data
+,,F5,First or Second equivalence point,First; Second,pH,Choice
+,,F6,NaOH Volume added before the largest pH increase,20,mL,Data
+,,F7,NaOH Volume added after the largest pH increase,21,mL,Data
+,,F8,Volume of NaOH added at the equivalence point,=E8+E9/2,mL,Calculated
+,,F9,Moles of NaOH,=E10/1000*E6,mol,Calculated
+,,F10,"Moles of diprotic acid, H2X","=IF(E7=""First"",E11,E11/2)",mol,Calculated
+,,F11,Molecular weight of diprotic acid,100,g/mol,Calculated
+,,F12,Name of diprotic acid,Name,,Text
+,,F13,Accepted molecular weight of diprotic acid,100,g/mol,Data
+,,F14,Percent Error,=(E15-E13)/E15*100,%,Calculated
+,Alternate equivalence point,,,,,
+,,F16,(indicate the one used in the calculations below),First; Second,,Choice
+,,F17,NaOH Volume added before the largest pH increase,10,mL,Data
+,,F18,NaOH Volume added after the largest pH increase,11,mL,Data
+,,F19,Volume of NaOH added at the alternate equivalence point,=E19+E20/2,mL,Calculated
+Extension,,,,,,
+,,F21,NaOH volume added at 1st half equivalence point,"=IF(E7=""First"",E10/2,E21/2)",mL,Calculated
+,,F22,NaOH volume added at 2nd half equivalence point,"=IF(E7=""Second"",(E10-E21)+E21,(E21-E10)+E10)",mL,Calculated
+,,F23,pKa1,3,,Data
+,,F24,pKa2,6,,Data
+,,F25,Ka1,=10^-E25,,Calculated
+,,F26,Ka2,=10^-E26,,Calculated

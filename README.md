@@ -1,167 +1,75 @@
-# Ka/Kb Lab Calculator
+# Lab Calculator Platform
 
-An interactive web application designed to help students check their work for the "Determination of Ka and Kb Lab". Students can enter their measured pH values and calculated concentrations, and the app provides real-time validation feedback without revealing the correct answers.
+A unified web application for chemistry lab calculations with flexible CSV-based configuration.
 
-## 🎯 Features
+## Features
 
-### Interactive Lab Calculator
-- **Dual Trial Support**: Separate input fields for Trial 1 and Trial 2
-- **Section-based Organization**: Each lab section has its own "Check Work" button
-- **Real-time Validation**: 2-3 second calculation delay with spinning animation
-- **Smart Feedback System**:
-  - ✅ **Correct** (within 10% tolerance)
-  - ⚠️ **Close** (10-15% error) - Yellow warning
-  - ❌ **Incorrect** (>15% error)
+- **Unified Platform**: Single webapp with multiple lab calculators
+- **Header-Based CSV Format**: Flexible, Excel-friendly CSV structure
+- **URL Routing**: Direct links to specific calculators
+- **Dynamic Layout**: Auto-detects single vs dual-trial formats
+- **Real-time Validation**: Immediate feedback on student calculations
+- **PDF Export**: Generate lab reports with student data and results
 
-### User Experience
-- **Check Work Buttons**: Students must actively request validation for each section
-- **Empty Box Handling**: Only validates non-empty input fields
-- **Scientific Notation Support**: Accepts values like 1.0E-3 for 0.001
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
+## Available Calculators
 
-### Data Management
-- **CSV-based Configuration**: Easy to update lab data via CSV files
-- **Multiple Lab Sections**:
-  - The equilibrium constant of acetic acid
-  - Keq of an unknown weak acid
-  - The equilibrium constant of a weak base
+1. **🧪 Titration of a Diprotic Acid** - Single-trial titration calculations
+2. **⚗️ Determination of Ka and Kb** - Dual-trial acid-base equilibrium calculations
 
-## 🛠️ Technical Stack
+## URL Examples
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **State Management**: Zustand
-- **Styling**: CSS with modern gradients and animations
-- **Data Processing**: Custom CSV parser
-- **Validation**: Tolerance-based comparison logic
+- Default: `http://localhost:5180/` → Titration Calculator
+- Ka/Kb: `http://localhost:5180/?calculator=kakb` → Ka/Kb Calculator
 
-## 🚀 Getting Started
+## CSV Format
 
-### Prerequisites
-- Node.js (version 16 or higher)
-- npm or yarn
+The platform uses a header-based CSV format that's Excel-friendly and flexible:
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/jkawagoe/kakb-lab-calculator.git
-   cd kakb-lab-calculator
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:5173` (or the port shown in terminal)
-
-## 📁 Project Structure
-
-```
-kakb-lab-calculator/
-├── src/
-│   ├── components/          # React components
-│   │   ├── CalculatorGrid.tsx    # Main grid layout
-│   │   ├── CalculatorRow.tsx     # Individual row component
-│   │   ├── CheckWorkButton.tsx   # Check work button with spinner
-│   │   ├── FileLoader.tsx        # CSV file upload (unused)
-│   │   └── SummaryPanel.tsx      # Progress summary
-│   ├── store/
-│   │   └── calculatorStore.ts    # Zustand state management
-│   ├── utils/
-│   │   ├── csvParser.ts          # CSV data parsing
-│   │   └── formulaEngine.ts      # Formula evaluation (legacy)
-│   ├── types.ts                  # TypeScript definitions
-│   ├── App.tsx                   # Main application component
-│   └── main.tsx                  # Application entry point
-├── public/
-│   └── KaKb Key Calculator Labels.csv  # Lab data
-├── Excel Logic/               # Original Excel formulas and data
-└── README.md
+### Single-Trial Format (7 columns):
+```csv
+Title,Lab Name,Tolerance 1,0.1,Tolerance 2,0.15
+Section,Subsection,DataRef,Label,Trial 1,Unit,Entry Type
 ```
 
-## 🎮 How to Use
+### Dual-Trial Format (9 columns):
+```csv
+Title,Lab Name,Tolerance 1,0.1,Tolerance 2,0.15
+Section,Subsection,DataRef1,DataRef2,Label,Trial 1,Trial 2,Unit,Entry Type
+```
 
-### For Students
-1. **Enter Values**: Input your measured pH values and calculated concentrations
-2. **Check Work**: Click the "Check Work" button for each section
-3. **Wait for Results**: The app will show "Calculating..." for 2-3 seconds
-4. **Review Feedback**: See ✅, ⚠️, or ❌ indicators for each value
-5. **Reset if Needed**: Click "Reset" to clear results and try again
+### Column Headers:
+- `Title` - Lab title (first row only)
+- `Tolerance 1/2` - Good/close tolerance values (first row only)
+- `Section` - Main section name
+- `Subsection` - Subsection name
+- `DataRef*` - Excel cell references (F5, G5, etc.)
+- `Label` - Display label for students
+- `Trial *` - Trial values or formulas
+- `Unit` - Measurement unit
+- `Entry Type` - Data, Calculated, Choice, or Text
 
-### For Instructors
-1. **Update Data**: Modify the CSV file in `public/KaKb Key Calculator Labels.csv`
-2. **Adjust Tolerance**: Change the tolerance value in `src/store/calculatorStore.ts`
-3. **Customize Sections**: Update the CSV structure to add/remove lab sections
+## Development
 
-## 📊 CSV Data Format
+```bash
+npm install
+npm run dev
+```
 
-The app uses a structured CSV format with the following columns:
-- **Section**: Main lab section title
-- **Subsection**: Specific experiment within the section
-- **Label**: Description of the measurement/calculation
-- **Trial 1**: Expected value for Trial 1
-- **Trial 2**: Expected value for Trial 2
-- **Unit**: Unit of measurement
+## Deployment
 
-## 🔧 Configuration
+The platform is designed to be deployed as a single application with multiple calculators accessible via URL parameters.
 
-### Tolerance Settings
-The validation tolerance is set to 10% by default. To change this:
-1. Open `src/store/calculatorStore.ts`
-2. Modify the `tolerance` value in the store
-3. The "close" range is automatically set to 10-15% of the tolerance
+## Adding New Calculators
 
-### Adding New Lab Sections
-1. Update the CSV file with new section data
-2. Ensure proper section/subsection structure
-3. The app will automatically detect and display new sections
+1. Create a header-based CSV file in the `public/` directory
+2. Add the calculator configuration to `src/config/calculators.ts`
+3. The platform will automatically detect the format and layout
 
-## 🎨 Customization
+## Technical Stack
 
-### Styling
-- Main styles: `src/App.css`
-- Component-specific styles are co-located with components
-- Uses CSS custom properties for easy theme changes
-
-### Input Types
-The app automatically detects input types based on labels:
-- **pH**: pH measurements
-- **Mass**: Mass measurements (grams)
-- **Keq**: Equilibrium constants
-- **Concentration**: Molar concentrations
-- **Unknown #**: Unknown sample numbers
-
-## 🐛 Troubleshooting
-
-### Common Issues
-1. **Port already in use**: The app will automatically try the next available port
-2. **CSV not loading**: Check that the CSV file is in the `public/` directory
-3. **Values not validating**: Ensure the CSV has the correct structure
-
-### Development
-- **Hot Reload**: Changes are automatically reflected in the browser
-- **TypeScript**: Full type safety with comprehensive interfaces
-- **Linting**: ESLint and TypeScript compiler check for errors
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📞 Support
-
-For questions or issues, please open an issue on the GitHub repository.
-
----
-
-**Built with ❤️ for chemistry education**
+- **React + TypeScript** - Frontend framework
+- **Vite** - Build tool
+- **Zustand** - State management
+- **Math.js** - Formula evaluation
+- **jsPDF** - PDF generation
+- **Header-Based Parser** - Flexible CSV parsing
