@@ -116,7 +116,7 @@ export class HeaderBasedCSVParser {
 
       // Create calculation row
       const row = this.createCalculationRow(
-        i + 1, // Use line number as ID
+        (i + 1).toString(), // Use line number as ID
         columns,
         columnMapping,
         currentSection,
