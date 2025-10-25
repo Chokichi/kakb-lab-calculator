@@ -119,8 +119,6 @@ export class FormulaEngine {
       jsFormula = jsFormula.replace(regex, replacement);
     });
     
-    // TEMPORARY LOGGING: Show the formula after cell reference replacement
-    console.log(`  After cell replacement: ${jsFormula}`);
       
       
       // Check if there are any remaining cell references that weren't replaced
@@ -153,9 +151,7 @@ export class FormulaEngine {
         return null;
       }
       
-      console.log(`  Final formula to evaluate: ${jsFormula}`);
       const result = evaluate(jsFormula);
-      console.log(`  Math.js result: ${result} (type: ${typeof result})`);
       return typeof result === 'number' ? result : null;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
