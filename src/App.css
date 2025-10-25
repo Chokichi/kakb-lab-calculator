@@ -1100,3 +1100,66 @@ body.modal-open {
   font-size: 0.9rem;
   font-style: italic;
 }
+
+/* Lab Type Filter Styles */
+.lab-type-filter {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lab-type-filter label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.lab-type-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.lab-type-select:hover {
+  border-color: #007bff;
+}
+
+.lab-type-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Enhanced Calculator Item Styles */
+.item-lab-type {
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.lab-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.badge-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.badge-value {
+  color: #333;
+  text-transform: capitalize;
+}

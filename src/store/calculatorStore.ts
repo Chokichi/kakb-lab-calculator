@@ -104,14 +104,24 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
     let computedValueTrial2 = row.computedValueTrial2;
 
     if (row.formula.trial1 && canCalculateTrial1) {
+      // TEMPORARY LOGGING: Show formula calculation
+      console.log(`🧮 Calculating ${row.label} Trial 1:`);
+      console.log(`  Formula: ${row.formula.trial1}`);
+      console.log(`  Inputs:`, inputs);
       const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
+      console.log(`  Result: ${result1}`);
       if (result1 !== null) {
         computedValueTrial1 = result1;
       }
     }
 
     if (row.formula.trial2 && canCalculateTrial2) {
+      // TEMPORARY LOGGING: Show formula calculation
+      console.log(`🧮 Calculating ${row.label} Trial 2:`);
+      console.log(`  Formula: ${row.formula.trial2}`);
+      console.log(`  Inputs:`, inputs);
       const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
+      console.log(`  Result: ${result2}`);
       if (result2 !== null) {
         computedValueTrial2 = result2;
       }
@@ -186,14 +196,24 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
     let computedValueTrial2 = row.computedValueTrial2;
 
     if (row.formula.trial1 && computedValueTrial1 === null && canCalculateTrial1) {
+      // TEMPORARY LOGGING: Show formula calculation (second pass)
+      console.log(`🧮 Calculating ${row.label} Trial 1 (second pass):`);
+      console.log(`  Formula: ${row.formula.trial1}`);
+      console.log(`  Inputs:`, inputs);
       const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
+      console.log(`  Result: ${result1}`);
       if (result1 !== null) {
         computedValueTrial1 = result1;
       }
     }
 
     if (row.formula.trial2 && computedValueTrial2 === null && canCalculateTrial2) {
+      // TEMPORARY LOGGING: Show formula calculation (second pass)
+      console.log(`🧮 Calculating ${row.label} Trial 2 (second pass):`);
+      console.log(`  Formula: ${row.formula.trial2}`);
+      console.log(`  Inputs:`, inputs);
       const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
+      console.log(`  Result: ${result2}`);
       if (result2 !== null) {
         computedValueTrial2 = result2;
       }
@@ -455,6 +475,15 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
               const hasTrial1Value = row.studentValueTrial1 !== null;
               const hasTrial2Value = row.studentValueTrial2 !== null;
               
+              // TEMPORARY LOGGING: Output expected values when checking
+              console.log(`🔍 Checking: ${row.label}`);
+              if (hasTrial1Value) {
+                console.log(`  Trial 1 - Student: ${row.studentValueTrial1}, Expected: ${row.computedValueTrial1}`);
+              }
+              if (hasTrial2Value) {
+                console.log(`  Trial 2 - Student: ${row.studentValueTrial2}, Expected: ${row.computedValueTrial2}`);
+              }
+              
               const isCorrectTrial1 = hasTrial1Value ? 
                 checkCorrectness(row.studentValueTrial1, row.computedValueTrial1, tolerance) : null;
               const isCorrectTrial2 = hasTrial2Value ? 
@@ -464,6 +493,14 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
                   checkClose(row.studentValueTrial1, row.computedValueTrial1, tolerance, toleranceClose) : null;
                 const isCloseTrial2 = hasTrial2Value ? 
                   checkClose(row.studentValueTrial2, row.computedValueTrial2, tolerance, toleranceClose) : null;
+              
+              // TEMPORARY LOGGING: Output results
+              if (hasTrial1Value) {
+                console.log(`  Trial 1 Result: ${isCorrectTrial1 ? '✅ Correct' : isCloseTrial1 ? '⚠️ Close' : '❌ Incorrect'}`);
+              }
+              if (hasTrial2Value) {
+                console.log(`  Trial 2 Result: ${isCorrectTrial2 ? '✅ Correct' : isCloseTrial2 ? '⚠️ Close' : '❌ Incorrect'}`);
+              }
               
               return {
                 ...row,

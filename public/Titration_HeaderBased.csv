@@ -1,4 +1,4 @@
-Title,Titration of a Diprotic Acid,Tolerance 1,0.1,Tolerance 2,0.15
+Title,Titration of a Diprotic Acid,Description,Single-trial titration calculations with equivalence points,Icon,🧪,Color,#4CAF50,Tolerance 1,0.1,Tolerance 2,0.15
 Section,Subsection,DataRef,Label,Trial 1,Unit,Entry Type
 Data Table,,,,,,
 ,,F3,Mass of diprotic acid,0.12,g,Data

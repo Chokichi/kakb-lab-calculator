@@ -46,7 +46,7 @@ export class HeaderBasedCSVParser {
       else if (lower === 'unit') mapping.unit = index;
       else if (lower === 'entry type') mapping.entryType = index;
       else if (lower.startsWith('dataref')) mapping.dataRefs.push(index);
-      else if (lower.startsWith('trial')) mapping.trials.push(index);
+      else if (lower.startsWith('trial') || lower.startsWith('sample')) mapping.trials.push(index);
     });
 
     return mapping;
@@ -232,8 +232,8 @@ export class HeaderBasedCSVParser {
       trial2Value: expectedValues.trial2 || undefined,
       trial1DataTag: trialData.trial1?.dataRef || '',
       trial2DataTag: trialData.trial2?.dataRef || '',
-      trial1HasInput: (trialData.trial1?.dataRef && trialData.trial1?.value !== '') || false,
-      trial2HasInput: (trialData.trial2?.dataRef && trialData.trial2?.value !== '') || false,
+      trial1HasInput: (trialData.trial1?.dataRef && trialData.trial1?.value !== '' && trialData.trial1?.value.toUpperCase() !== 'NA') || false,
+      trial2HasInput: (trialData.trial2?.dataRef && trialData.trial2?.value !== '' && trialData.trial2?.value.toUpperCase() !== 'NA') || false,
       missingDependenciesTrial1: [],
       missingDependenciesTrial2: [],
       canCalculateTrial1: !formula.trial1,

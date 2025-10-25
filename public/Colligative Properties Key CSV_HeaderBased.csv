@@ -1,0 +1,45 @@
+﻿Title,Colligative Properties Lab,Tolerance 1,,0.1,Tolerance 2,0.15,,
+Section,Subsection,DataRef1,DataRef2,Label,Sample 1,Sample 2,Unit,Entry Type
+Part 1: Freezing point of cyclohexane,,,,,,,,
+,,F4,G4,Mass of test tube+beaker,50,NA,g,Data
+,,F5,G5,Mass of cyclohexane+test tube+beaker,62,NA,g,Data
+,,F6,G6,First measured freezing point of cyclohexane,6,NA,˚C,Data
+,,F7,G7,Second measured freezing point of cyclohexane,6,NA,˚C,Data
+,,F8,G8,Third measured freezing point of cyclohexane (if needed),6,NA,˚C,Data
+,,F9,G9,Average freezing point of pure cyclohexane,=AVERAGE(F6:F8),NA,˚C,Calculated
+Part 2: Freezing point depression,,,,,,,,
+,,F11,G11,Mass of test tube+beaker,50,50,g,Data
+,,F12,G12,Mass of cyclohexane+test tube+beaker,60,60,g,Data
+,,F13,G13,Mass of weighpaper,0.43,0.43,g,Data
+,,F14,G14,Mass of p-dichlorobenzene +weighpaper,1,1,g,Data
+,,F15,G15,First measured freezing point of sample,-3,-3,˚C,Data
+,,F16,G16,Second measured freezing point of sample,-3,-3,˚C,Data
+,Calculations:,,,,,,,
+,,F18,G18,Average freezing point of soln of p-dichlorobenzene,=AVERAGE(F15:F16),NA,˚C,Calculated
+,,F19,G19,Freezing point depression from pure cyclohexane,=F9-F18,=F9-F18,˚C,Calculated
+,,F20,G20,Mass of cyclohexane used,=F12-F11,=G12-G11,g,Calculated
+,,F21,G21,Mass of p-dichlorobenzene used,=F14-F13,=G14-G13,g,Calculated
+,,F22,G22,Moles p-dichlorobenzene,=F21/146.99,=G21/146.99,mol,Calculated
+,,F23,G23,Molality of solution,=F22/(F20/1000),=G22/(G20/1000),mol/kg,Calculated
+,,F24,G24,Calculated value of Kf,=F19/F23,=G19/G23,˚C/m,Calculated
+,,F25,G25,Average Value of Kf,=(F24+G24)/2,NA,˚C/m,Calculated
+Part 3: Molar mass of an unknown solid,,,,,,,,
+,,F27,G27,Unknown number,1,1,Unitless,Data
+,,F28,G28,Mass of test tube+beaker,50,50,g,Data
+,,F29,G29,Mass of cyclohexane+test tube+beaker,60,60,g,Data
+,,F30,G30,Mass of weighpaper,0.43,0.43,g,Data
+,,F31,G31,Mass of unknown +weighpaper,1,1,g,Data
+,,F32,G32,First measured freezing point of sample,-3,-3,˚C,Data
+,,F33,G33,Second measured freezing point of sample,-3,-3,˚C,Data
+,Calculations:,,,,,,,
+,,F35,G35,Average freezing point of unknown solution,=AVERAGE(F32:F33),=AVERAGE(G32:G33),˚C,Calculated
+,,F36,G36,Freezing point depression from pure cyclohexane,=F9-F35,=F9-G35,˚C,Calculated
+,,F37,G37,Molality of unknown solution (use Kf from part 2),=F36/F25,=G36/F25,mol/kg,Calculated
+,,F38,G38,Mass of cyclohexane used,=F29-F28,=G29-G28,g,Calculated
+,,F39,G39,Moles of unknown used,=F37*(F38/1000),=G37*(G38/1000),mol,Calculated
+,,F40,G40,Mass of unknown solute,=F31-F30,=G31-G30,g,Calculated
+,,F41,G41,Molar mass of unknown,=F40/F39,=G40/G39,g/mol,Calculated
+,,F42,G42,Average Value of unknown molar mass,=(F41+G41)/2,NA,g/mol,Calculated
+Results,,,,,,,,
+,,F44,G44,Identification of Unknown,Unknown Name,NA,,Text
+,,F45,G45,Percent error in molar mass determination,%,NA,,Data

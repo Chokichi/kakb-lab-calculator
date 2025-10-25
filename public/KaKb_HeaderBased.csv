@@ -1,4 +1,4 @@
-Title,Determination of Ka and Kb,Tolerance 1,0.1,Tolerance 2,0.15
+Title,Determination of Ka and Kb,Description,Dual-trial acid-base equilibrium calculations,Icon,⚗️,Color,#2196F3,Tolerance 1,0.1,Tolerance 2,0.15
 Section,Subsection,DataRef1,DataRef2,Label,Trial 1,Trial 2,Unit,Entry Type
 The equilibrium constant of acetic acid,,,,,,,,
 ,pH of 0.50 M HC2H3O2,,,,,,,
