@@ -182,7 +182,18 @@ export class HeaderBasedCSVParser {
     
     // Determine if this is a direct input
     const isDirectInput = entryType === 'Data' || entryType === 'Choice' || entryType === 'Text';
-    const shouldAllowInput = entryType === 'Data' || entryType === 'Calculated' || entryType === 'Choice' || entryType === 'Text';
+    const shouldAllowInput = entryType === 'Data' || entryType === 'Calculated' || entryType === 'Calculation' || entryType === 'Choice' || entryType === 'Text';
+
+    // DEBUG: Log trial data for Quant Prep Gas
+    if (label && (label.includes('magnesium') || label.includes('Partial pressure'))) {
+      console.log('🔍 Parsing row:', {
+        label,
+        entryType,
+        trialData,
+        shouldAllowInput,
+        columns: columns.slice(0, 8)
+      });
+    }
 
     // Parse choice options for Choice entries
     const choiceOptions: { [key: string]: string[] } = {};
