@@ -179,7 +179,7 @@ export class HeaderBasedCSVParser {
         }
       }
     });
-
+    
     // Determine if this is a direct input
     const isDirectInput = entryType === 'Data' || entryType === 'Choice' || entryType === 'Text';
     const shouldAllowInput = entryType === 'Data' || entryType === 'Calculated' || entryType === 'Choice' || entryType === 'Text';
@@ -329,7 +329,8 @@ export class HeaderBasedCSVParser {
    * Cleans label text
    */
   private cleanLabel(label: string): string {
-    return label.replace(/^\d+[a-z]*\s*/, '').trim();
+    // Don't remove numbers at the beginning - they're part of the label
+    return label.trim();
   }
 
   /**
