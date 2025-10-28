@@ -15,6 +15,7 @@ A unified web application for chemistry lab calculations with flexible CSV-based
 
 1. **🧪 Titration of a Diprotic Acid** - Single-trial titration calculations
 2. **⚗️ Determination of Ka and Kb** - Dual-trial acid-base equilibrium calculations
+3. **Colligative Properties**
 
 ## URL Examples
 

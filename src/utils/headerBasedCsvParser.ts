@@ -161,8 +161,13 @@ export class HeaderBasedCSVParser {
     mapping.dataRefs.forEach((dataRefIndex, trialIndex) => {
       const trialIndex2 = mapping.trials[trialIndex];
       if (trialIndex2 !== undefined && trialIndex2 < columns.length) {
-        const dataRef = columns[dataRefIndex] || '';
+        let dataRef = columns[dataRefIndex] || '';
         const value = columns[trialIndex2] || '';
+        
+        // Strip = prefix from dataRef if present (e.g., =E4 -> E4)
+        if (dataRef.startsWith('=')) {
+          dataRef = dataRef.substring(1);
+        }
         
         // Always create trial data if dataRef exists, but mark NA values as empty
         if (dataRef && dataRef.trim() !== '') {
@@ -274,6 +279,11 @@ export class HeaderBasedCSVParser {
         if (matches) {
           matches.forEach(match => inputs.add(match));
         }
+      }
+      
+      // Also extract from dataRef if it's a cell reference (without = prefix)
+      if (trial.dataRef && /^[A-Z]+\d+$/.test(trial.dataRef)) {
+        inputs.add(trial.dataRef);
       }
     });
     
