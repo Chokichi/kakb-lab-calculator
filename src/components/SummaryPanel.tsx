@@ -32,8 +32,19 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
     (row.studentValueTrial2 !== null && row.isCorrectTrial2 === null)
   ).length;
 
+  // Filter rows for accuracy calculation (only Calculation and Calculated types)
+  const calculationRows = rows.filter(row => 
+    row.entryType === 'Calculation' || row.entryType === 'Calculated'
+  );
+  const completedCalculationRows = calculationRows.filter(row => 
+    row.studentValueTrial1 !== null || row.studentValueTrial2 !== null
+  ).length;
+  const correctCalculationRows = calculationRows.filter(row => 
+    row.isCorrectTrial1 === true || row.isCorrectTrial2 === true
+  ).length;
+
   const completionPercentage = totalRows > 0 ? Math.round((completedRows / totalRows) * 100) : 0;
-  const accuracyPercentage = completedRows > 0 ? Math.round((correctRows / completedRows) * 100) : 0;
+  const accuracyPercentage = completedCalculationRows > 0 ? Math.round((correctCalculationRows / completedCalculationRows) * 100) : 0;
 
   return (
     <div className="summary-panel">
@@ -57,7 +68,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
         <div className="stat-item">
           <span className="stat-label">Accuracy:</span>
           <span className="stat-value">{accuracyPercentage}%</span>
-          <span className="stat-detail">({correctRows}/{completedRows})</span>
+          <span className="stat-detail">({correctCalculationRows}/{completedCalculationRows})</span>
         </div>
         
         <div className="stat-item">
