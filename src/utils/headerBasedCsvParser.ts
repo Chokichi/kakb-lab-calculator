@@ -221,8 +221,11 @@ export class HeaderBasedCSVParser {
       tolerance: 0.10,
       studentValueTrial1: null,
       studentValueTrial2: null,
-      computedValueTrial1: expectedValues.trial1 || null,
-      computedValueTrial2: expectedValues.trial2 || null,
+      // For calculated/calculation entry types, computed values should be null initially
+      // They will be calculated based on dependencies, not from placeholder values
+      // Data entry types use the expected values from CSV
+      computedValueTrial1: (entryType === 'Calculated' || entryType === 'Calculation') ? null : (expectedValues.trial1 || null),
+      computedValueTrial2: (entryType === 'Calculated' || entryType === 'Calculation') ? null : (expectedValues.trial2 || null),
       isCorrectTrial1: null,
       isCorrectTrial2: null,
       isCloseTrial1: null,

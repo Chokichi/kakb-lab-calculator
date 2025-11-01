@@ -103,17 +103,27 @@ function calculateExpectedValues(rows: CalculationRow[]): CalculationRow[] {
     let computedValueTrial1 = row.computedValueTrial1;
     let computedValueTrial2 = row.computedValueTrial2;
 
-    if (row.formula.trial1 && canCalculateTrial1) {
-      const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
-      if (result1 !== null) {
-        computedValueTrial1 = result1;
+    if (row.formula.trial1) {
+      if (canCalculateTrial1) {
+        const result1 = formulaEngine.evaluateFormula(row.formula.trial1, inputs);
+        if (result1 !== null) {
+          computedValueTrial1 = result1;
+        }
+      } else {
+        // If we can't calculate, reset to null (no expected value available)
+        computedValueTrial1 = null;
       }
     }
 
-    if (row.formula.trial2 && canCalculateTrial2) {
-      const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
-      if (result2 !== null) {
-        computedValueTrial2 = result2;
+    if (row.formula.trial2) {
+      if (canCalculateTrial2) {
+        const result2 = formulaEngine.evaluateFormula(row.formula.trial2, inputs);
+        if (result2 !== null) {
+          computedValueTrial2 = result2;
+        }
+      } else {
+        // If we can't calculate, reset to null (no expected value available)
+        computedValueTrial2 = null;
       }
     }
 
