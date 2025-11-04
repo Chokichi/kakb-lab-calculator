@@ -221,11 +221,12 @@ export class HeaderBasedCSVParser {
       tolerance: 0.10,
       studentValueTrial1: null,
       studentValueTrial2: null,
-      // For calculated/calculation entry types, computed values should be null initially
+      // For rows with formulas, computed values should be null initially
       // They will be calculated based on dependencies, not from placeholder values
-      // Data entry types use the expected values from CSV
-      computedValueTrial1: (entryType === 'Calculated' || entryType === 'Calculation') ? null : (expectedValues.trial1 || null),
-      computedValueTrial2: (entryType === 'Calculated' || entryType === 'Calculation') ? null : (expectedValues.trial2 || null),
+      // Only Data entry types without formulas use the expected values from CSV
+      // If a row has a formula, it should never use placeholder values
+      computedValueTrial1: formula.trial1 ? null : (expectedValues.trial1 || null),
+      computedValueTrial2: formula.trial2 ? null : (expectedValues.trial2 || null),
       isCorrectTrial1: null,
       isCorrectTrial2: null,
       isCloseTrial1: null,
