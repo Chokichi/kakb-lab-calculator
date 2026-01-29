@@ -2,6 +2,7 @@ import React from 'react';
 import { CalculationRow } from '../types';
 import { CalculatorRow as CalculatorRowComponent } from './CalculatorRow';
 import { CheckWorkButton } from './CheckWorkButton';
+import { KatexText } from '../utils/katexRenderer';
 
 interface CalculatorGridProps {
   rows: CalculationRow[];
@@ -40,7 +41,7 @@ export const CalculatorGrid: React.FC<CalculatorGridProps> = ({
     <div className="calculator-grid">
       {Object.entries(groupedRows).map(([sectionTitle, subsections]) => (
         <div key={sectionTitle} className="section">
-          <h2 className="main-section-title">{sectionTitle}</h2>
+          <h2 className="main-section-title"><KatexText text={sectionTitle} /></h2>
                 {Object.entries(subsections).map(([subsectionTitle, subsectionRows]) => {
                   // Check if any row in this subsection is being checked or has been checked
                   const isChecking = subsectionRows.some(row => row.isChecking);
@@ -59,7 +60,7 @@ export const CalculatorGrid: React.FC<CalculatorGridProps> = ({
                   return (
                     <div key={`${sectionTitle}-${subsectionTitle}`} className="subsection">
                       <div className="subsection-header">
-                        <h3 className="subsection-title">{subsectionTitle}</h3>
+                        <h3 className="subsection-title"><KatexText text={subsectionTitle} /></h3>
                         <CheckWorkButton
                           subsectionId={subsectionTitle}
                           isChecking={isChecking}

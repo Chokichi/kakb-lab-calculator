@@ -7,6 +7,7 @@ import { RestorationPrompt } from './components/RestorationPrompt';
 import { getCalculatorConfigFromURL, onURLChange } from './utils/urlUtils';
 import { CalculatorConfig } from './config/calculators';
 import { LocalStorageManager } from './utils/localStorage';
+import { KatexText } from './utils/katexRenderer';
 import './App.css';
 
 function App() {
@@ -100,7 +101,7 @@ function App() {
       />
       
       <header className="app-header">
-        <h1>{title}</h1>
+        <h1><KatexText text={title} /></h1>
         <p>Enter your measured and calculated concentrations to check your work</p>
         <div className="instructions">
           <p><strong>Instructions:</strong></p>

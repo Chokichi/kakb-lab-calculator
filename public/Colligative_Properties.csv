@@ -32,8 +32,8 @@ Part 2: Freezing point depression,,,,,,,,
 ,,=F21,=G21,Mass of p-dichlorobenzene used,=F14-F13,=G14-G13,g,Calculated
 ,,=F22,=G22,Moles p-dichlorobenzene,=F21/146.99,=G21/146.99,mol,Calculated
 ,,=F23,=G23,Molality of solution,=F22/(F20/1000),=G22/(G20/1000),mol/kg,Calculated
-,,=F24,=G24,Calculated value of Kf,=F19/F23,=G19/G23,˚C/m,Calculated
-,,=F25,=G25,Average Value of Kf,=(F24+G24)/2,NA,˚C/m,Calculated
+,,=F24,=G24,Calculated value of $K_f$,=F19/F23,=G19/G23,˚C/m,Calculated
+,,=F25,=G25,Average Value of $K_f$,=(F24+G24)/2,NA,˚C/m,Calculated
 Part 3: Molar mass of an unknown solid,,,,,,,,
 ,Data,,,,,,,
 ,,=F27,=G27,Unknown number,1,1,Unitless,Data
@@ -46,7 +46,7 @@ Part 3: Molar mass of an unknown solid,,,,,,,,
 ,Calculations,,,,,,,
 ,,=F35,=G35,Average freezing point of unknown solution,=(F32+F33)/2,=(G32+G33)/2,˚C,Calculated
 ,,=F36,=G36,Freezing point depression from pure cyclohexane,=F9-F35,=F9-G35,˚C,Calculated
-,,=F37,=G37,Molality of unknown solution (use Kf from part 2),=F36/F25,=G36/F25,mol/kg,Calculated
+,,=F37,=G37,Molality of unknown solution (use $K_f$ from part 2),=F36/F25,=G36/F25,mol/kg,Calculated
 ,,=F38,=G38,Mass of cyclohexane used,=F29-F28,=G29-G28,g,Calculated
 ,,=F39,=G39,Moles of unknown used,=F37*(F38/1000),=G37*(G38/1000),mol,Calculated
 ,,=F40,=G40,Mass of unknown solute,=F31-F30,=G31-G30,g,Calculated

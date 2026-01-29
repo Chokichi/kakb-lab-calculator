@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CalculationRow } from '../types';
+import { KatexText } from '../utils/katexRenderer';
 
 interface CalculatorRowProps {
   row: CalculationRow;
@@ -49,7 +50,7 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
         <div className="tooltip-content">
           {dependentRows.map((dep, index) => (
             <div key={index} className="dependency-item">
-              • {dep?.row.label} ({dep?.dataTag})
+              • <KatexText text={dep?.row.label || ''} /> ({dep?.dataTag})
             </div>
           ))}
         </div>
@@ -103,7 +104,7 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
   return (
     <div className={`calculator-row ${isSingleColumn ? 'single-column' : ''}`}>
       <div className="row-label">
-        {row.label}
+        <KatexText text={row.label} />
         {row.isDirectInput && <span className="required-indicator">*</span>}
       </div>
       
@@ -220,7 +221,7 @@ export const CalculatorRow: React.FC<CalculatorRowProps> = ({ row, onValueChange
       </div>
       
       <div className="row-unit">
-        {row.unit}
+        <KatexText text={row.unit} />
       </div>
     </div>
   );

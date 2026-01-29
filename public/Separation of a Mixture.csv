@@ -12,20 +12,20 @@ Results,,,,,,
 ,Data,,,,,
 ,,=E16,Mass of empty evaporating dish,1,g,Data
 ,,=E17,Mass of dish and unknown mixture,1.5,g,Data
-,,=E18,Mass of dish and dry contents after NaI is removed,1.4,g,Data
-,,=E19,Mass of dish and contents after NH4Cl removed,1.3,g,Data
-,,=E20,Mass of second empty evaporating dish (used for NaCl),1,g,Data
-,,=E21,Mass of second dish and dry NaCl - 1st weighing,1.1,g,Data
-,,=E22,Mass of second dish and dry NaCl - 2nd weighing,1.1,g,Data
+,,=E18,Mass of dish and dry contents after $NaI$ is removed,1.4,g,Data
+,,=E19,Mass of dish and contents after $NH_4Cl$ removed,1.3,g,Data
+,,=E20,Mass of second empty evaporating dish (used for $NaCl$),1,g,Data
+,,=E21,Mass of second dish and dry $NaCl$ - 1st weighing,1.1,g,Data
+,,=E22,Mass of second dish and dry $NaCl$ - 2nd weighing,1.1,g,Data
 ,,=E23,Mass of the first dish and dry sand,1.2,g,Data
 ,Calculations,,,,,
 ,,=E25,Mass of the starting mixture,=E17-E16,g,Calculated
-,,=E26,Mass of NaI in mixture,=E17-E18,g,Calculated
-,,=E27,Mass of NH4Cl in mixture,=E18-E19,g,Calculated
-,,=E28,Mass of NaCl in mixture,=E22-E20,g,Calculated
+,,=E26,Mass of $NaI$ in mixture,=E17-E18,g,Calculated
+,,=E27,Mass of $NH_4Cl$ in mixture,=E18-E19,g,Calculated
+,,=E28,Mass of $NaCl$ in mixture,=E22-E20,g,Calculated
 ,,=E29,Mass of sand in mixture,=E23-E16,g,Calculated
-,,=E30,Percentage of NaI in mixture,=E26/E25*100,%,Calculated
-,,=E31,Percentage of NH4Cl in mixture,=E27/E25*100,%,Calculated
-,,=E32,Percentage of NaCl in mixture,=E28/E25*100,%,Calculated
+,,=E30,Percentage of $NaI$ in mixture,=E26/E25*100,%,Calculated
+,,=E31,Percentage of $NH_4Cl$ in mixture,=E27/E25*100,%,Calculated
+,,=E32,Percentage of $NaCl$ in mixture,=E28/E25*100,%,Calculated
 ,,=E33,Percentage of Sand in mixture,=E29/E25*100,%,Calculated
 ,,=E34,Percent of original recovered,=E30+E31+E32+E33,%,Calculated

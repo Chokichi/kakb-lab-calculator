@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { calculators, CalculatorConfig, getCalculatorsByLabType } from '../config/calculators';
+import { KatexText } from '../utils/katexRenderer';
 
 interface CalculatorSelectorProps {
   currentCalculator: CalculatorConfig;
@@ -81,7 +82,7 @@ export const CalculatorSelector: React.FC<CalculatorSelectorProps> = ({
             }}
           >
             <span className="calculator-icon">{currentCalculator.icon}</span>
-            <span className="calculator-name">{currentCalculator.name}</span>
+            <span className="calculator-name"><KatexText text={currentCalculator.name} /></span>
             <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
           </button>
           
@@ -98,8 +99,8 @@ export const CalculatorSelector: React.FC<CalculatorSelectorProps> = ({
                 >
                   <span className="item-icon">{calculator.icon}</span>
                   <div className="item-content">
-                    <div className="item-name">{calculator.name}</div>
-                    <div className="item-description">{calculator.description}</div>
+                    <div className="item-name"><KatexText text={calculator.name} /></div>
+                    <div className="item-description"><KatexText text={calculator.description} /></div>
                     {calculator.labType && (
                       <div className="item-lab-type">{calculator.labType}</div>
                     )}
@@ -112,7 +113,7 @@ export const CalculatorSelector: React.FC<CalculatorSelectorProps> = ({
       </div>
       
       <div className="calculator-info">
-        <p>{currentCalculator.description}</p>
+        <p><KatexText text={currentCalculator.description} /></p>
         {currentCalculator.labType && (
           <div className="lab-type-badge">
             <span className="badge-label">Lab Type:</span>
