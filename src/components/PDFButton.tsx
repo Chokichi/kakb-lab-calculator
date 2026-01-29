@@ -16,7 +16,7 @@ export const PDFButton: React.FC<PDFButtonProps> = ({ rows, title, studentName }
     
     try {
       const pdfGenerator = new PDFGenerator();
-      pdfGenerator.generateReport(rows, title, studentName);
+      await pdfGenerator.generateReport(rows, title, studentName);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again.');
