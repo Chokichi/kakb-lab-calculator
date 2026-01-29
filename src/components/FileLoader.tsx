@@ -31,7 +31,7 @@ export const FileLoader: React.FC<FileLoaderProps> = ({ onFileLoad, isLoading })
   return (
     <div className="file-loader">
       <div className="file-loader-content">
-        <h2>Ka/Kb Lab Calculator</h2>
+        <h2>Lab Calc</h2>
         <p>Load your lab data to start checking calculations</p>
         
         <div className="file-loader-actions">

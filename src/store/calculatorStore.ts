@@ -238,7 +238,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
   rows: [],
   tolerance: 0.10,
   toleranceClose: 0.15,
-  title: 'Ka/Kb Lab Calculator',
+  title: 'Lab Calc',
   isLoading: false,
   error: null,
 
