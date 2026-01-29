@@ -59,56 +59,179 @@ function detectLabType(title, description) {
   return 'default';
 }
 
+/**
+ * Check if CSV uses section-based format (\Start Parameters)
+ */
+function isSectionBasedFormat(csvContent) {
+  const lowerContent = csvContent.toLowerCase();
+  return lowerContent.includes('\\start parameters') && lowerContent.includes('\\start table');
+}
+
+/**
+ * Extract metadata from section-based CSV format
+ */
+function extractSectionBasedMetadata(csvContent) {
+  const lines = csvContent.split('\n');
+  
+  // Find parameters section boundaries
+  const paramStartIndex = lines.findIndex(line => line.toLowerCase().trim().startsWith('\\start parameters'));
+  const paramEndIndex = lines.findIndex(line => line.toLowerCase().trim().startsWith('\\end parameters'));
+  
+  if (paramStartIndex === -1 || paramEndIndex === -1) {
+    return null;
+  }
+  
+  let title = 'Lab Calculator';
+  let description = 'Laboratory calculation tool';
+  let icon = '🔬';
+  let color = '#2196F3';
+  let warningTolerance = 0.05;
+  let incorrectTolerance = 0.1;
+  let trials = 2;
+  
+  // Parse parameter rows
+  for (let i = paramStartIndex + 1; i < paramEndIndex; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    // Parse CSV line
+    const parts = line.split(',').map(p => p.trim());
+    const key = parts[0]?.toLowerCase();
+    const value = parts[1];
+    
+    if (!key || !value) continue;
+    
+    switch (key) {
+      case 'title':
+        title = value;
+        break;
+      case 'description':
+        description = value;
+        break;
+      case 'icon':
+        icon = value;
+        break;
+      case 'color':
+        color = value;
+        break;
+      case 'warning tolerance':
+        warningTolerance = parseFloat(value) || 0.05;
+        break;
+      case 'incorrect tolerance':
+        incorrectTolerance = parseFloat(value) || 0.1;
+        break;
+      case 'trials':
+        trials = parseInt(value) || 2;
+        break;
+    }
+  }
+  
+  return {
+    title,
+    description,
+    icon,
+    color,
+    warningTolerance,
+    incorrectTolerance,
+    trials,
+    format: 'section-based'
+  };
+}
+
+/**
+ * Extract metadata from header-based CSV format (legacy)
+ */
+function extractHeaderBasedMetadata(csvContent) {
+  const parsed = Papa.parse(csvContent, { header: false, skipEmptyLines: true });
+  const data = parsed.data;
+  
+  if (data.length === 0) return null;
+  
+  // Extract metadata from first row
+  const firstRow = data[0];
+  let title = 'Lab Calculator';
+  let description = 'Laboratory calculation tool';
+  let icon = '🔬';
+  let color = '#2196F3';
+  
+  // Parse metadata from first row (Title, Description, Icon, Color)
+  for (let i = 0; i < firstRow.length; i += 2) {
+    const key = firstRow[i]?.trim();
+    const value = firstRow[i + 1]?.trim();
+    
+    if (key === 'Title' && value) {
+      title = value;
+    } else if (key === 'Description' && value) {
+      description = value;
+    } else if (key === 'Icon' && value) {
+      icon = value;
+    } else if (key === 'Color' && value) {
+      color = value;
+    }
+  }
+  
+  return {
+    title,
+    description,
+    icon,
+    color,
+    format: 'header-based'
+  };
+}
+
 function extractMetadataFromCSV(csvPath) {
   try {
     const csvContent = fs.readFileSync(csvPath, 'utf8');
-    const parsed = Papa.parse(csvContent, { header: false, skipEmptyLines: true });
-    const data = parsed.data;
     
-    if (data.length === 0) return null;
+    let metadata;
     
-    // Extract metadata from first row
-    const firstRow = data[0];
-    let title = 'Lab Calculator';
-    let description = 'Laboratory calculation tool';
-    let icon = '🔬';
-    let color = '#2196F3';
-    
-    // Parse metadata from first row (Title, Description, Icon, Color)
-    for (let i = 0; i < firstRow.length; i += 2) {
-      const key = firstRow[i]?.trim();
-      const value = firstRow[i + 1]?.trim();
-      
-      if (key === 'Title' && value) {
-        title = value;
-      } else if (key === 'Description' && value) {
-        description = value;
-      } else if (key === 'Icon' && value) {
-        icon = value;
-      } else if (key === 'Color' && value) {
-        color = value;
-      }
+    // Detect format and extract metadata accordingly
+    if (isSectionBasedFormat(csvContent)) {
+      metadata = extractSectionBasedMetadata(csvContent);
+    } else {
+      metadata = extractHeaderBasedMetadata(csvContent);
     }
+    
+    if (!metadata) return null;
     
     // Auto-detect lab type if not specified
-    const labType = detectLabType(title, description);
-    if (!firstRow.includes('Icon')) {
-      icon = LAB_ICONS[labType] || LAB_ICONS.default;
+    const labType = detectLabType(metadata.title, metadata.description);
+    
+    // Apply default icon/color if not explicitly set
+    if (metadata.icon === '🔬') {
+      metadata.icon = LAB_ICONS[labType] || LAB_ICONS.default;
     }
-    if (!firstRow.includes('Color')) {
-      color = LAB_COLORS[labType] || LAB_COLORS.default;
+    if (metadata.color === '#2196F3') {
+      metadata.color = LAB_COLORS[labType] || LAB_COLORS.default;
     }
     
     return {
-      title,
-      description,
-      icon,
-      color,
+      ...metadata,
       labType
     };
   } catch (error) {
     console.error(`Error reading CSV ${csvPath}:`, error);
     return null;
+  }
+}
+
+/**
+ * Check if a CSV file is a valid calculator file
+ * Supports both HeaderBased and Section-based formats
+ */
+function isValidCalculatorCSV(filePath) {
+  // First check by filename pattern
+  const fileName = path.basename(filePath);
+  if (fileName.includes('HeaderBased')) {
+    return true;
+  }
+  
+  // Then check file content for section-based format
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return isSectionBasedFormat(content);
+  } catch {
+    return false;
   }
 }
 
@@ -118,20 +241,25 @@ function generateCalculatorConfigs() {
   
   try {
     const files = fs.readdirSync(publicDir);
-    const csvFiles = files.filter(file => 
-      file.endsWith('.csv') && 
-      file.includes('HeaderBased') // Only process HeaderBased CSV files
-    );
+    const csvFiles = files.filter(file => {
+      if (!file.endsWith('.csv')) return false;
+      const csvPath = path.join(publicDir, file);
+      return isValidCalculatorCSV(csvPath);
+    });
     
-    console.log(`Found ${csvFiles.length} CSV files:`, csvFiles);
+    console.log(`Found ${csvFiles.length} calculator CSV files:`, csvFiles);
     
     csvFiles.forEach((file, index) => {
       const csvPath = path.join(publicDir, file);
       const metadata = extractMetadataFromCSV(csvPath);
       
       if (metadata) {
-        // Generate ID from filename
-        const id = file.replace('_HeaderBased.csv', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+        // Generate ID from filename (handle both formats)
+        let id = file
+          .replace('_HeaderBased.csv', '')
+          .replace('.csv', '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '-');
         
         const config = {
           id,
@@ -140,11 +268,12 @@ function generateCalculatorConfigs() {
           csvFile: `/${file}`,
           icon: metadata.icon,
           color: metadata.color,
-          labType: metadata.labType
+          labType: metadata.labType,
+          format: metadata.format
         };
         
         calculators.push(config);
-        console.log(`Generated config for ${file}:`, config.name);
+        console.log(`Generated config for ${file}: ${config.name} (${metadata.format})`);
       }
     });
     
@@ -171,6 +300,7 @@ export interface CalculatorConfig {
   icon?: string;
   color?: string;
   labType?: string;
+  format?: 'header-based' | 'section-based';
 }
 
 export const calculators: CalculatorConfig[] = ${JSON.stringify(calculators, null, 2)};
@@ -192,6 +322,10 @@ export const getDefaultCalculator = (): CalculatorConfig => {
 
 export const getCalculatorsByLabType = (labType: string): CalculatorConfig[] => {
   return calculators.filter(calc => calc.labType === labType);
+};
+
+export const getCalculatorsByFormat = (format: 'header-based' | 'section-based'): CalculatorConfig[] => {
+  return calculators.filter(calc => calc.format === format);
 };
 `;
 

@@ -1,0 +1,25 @@
+\Start Parameters,,,,,,,,
+Title,Experiment Title,,,,,,,
+Description,Generic lab template for testing section-based format,,,,,,,
+Icon,🧪,,,,,,,
+Warning Tolerance,0.05,,,,,,,
+Incorrect Tolerance,0.1,,,,,,,
+Trials,2,,,,,,,
+\End Parameters,,,,,,,,
+\Start Table,,,,,,,,
+Section,Subsection,DataRef1,DataRef2,Label,Trial 1,Trial 2,Unit,Entry Type
+Section 1,,,,,,,,
+,,=F14,=G14,Unknown used,A; B; C; D,A; B; C; D,,Choice
+,,=F15,=G15,Mass of empty flask + foil,120,120,g,Data
+,,=F16,=G16,Temperature of hot water,100,100,C,Data
+,,=F17,=G17,Pressure in lab,757,757,inHg,Data
+,,=F18,=G18,Mass of flask + foil + condensed unknown AFTER heating and cooling,130,130,g,Data
+,,=F19,=G19,Volume of flask,270,270,mL,Data
+Section 2,,,,,,,,
+,,=F21,=G21,Mass of unknown,=F18-F15,=G18-G15,g,Calculated
+,,=F22,=G22,Temperature,=F16+273.15,=G16+273.15,K,Calculated
+,,=F23,=G23,Volume of flask,=F19/1000,=G19/1000,L,Calculated
+,,=F24,=G24,Pressure,=F17/29.92,=G17/29.92,atm,Calculated
+,,=F25,=G25,Moles of unknown,=F24*F23/F22/0.0821,=G24*G23/G22/0.0821,mol,Calculated
+,,=F26,=G26,Molar mass of unknown,=F21/F25,=G21/G25,g/mol,Calculated
+,,=F27,=G27,Average molar mass,=(F26+G26)/2,NA,g/mol,Calculated

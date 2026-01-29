@@ -1,14 +1,24 @@
 import { create } from 'zustand';
 import { CalculationRow, CalculatorState, CalculatorActions } from '../types';
 import { HeaderBasedCSVParser } from '../utils/headerBasedCsvParser';
+import { SectionBasedCSVParser } from '../utils/sectionBasedCsvParser';
 import { FormulaEngine } from '../utils/formulaEngine';
 import { CalculatorConfig } from '../config/calculators';
 import { LocalStorageManager } from '../utils/localStorage';
 
 type CalculatorStore = CalculatorState & CalculatorActions;
 
-const csvParser = new HeaderBasedCSVParser();
+const headerBasedParser = new HeaderBasedCSVParser();
+const sectionBasedParser = new SectionBasedCSVParser();
 const formulaEngine = FormulaEngine.getInstance();
+
+// Auto-detect and parse CSV using appropriate parser
+function parseCSVAuto(csvData: string): { rows: CalculationRow[], title: string, tolerance1: number, tolerance2: number } {
+  if (SectionBasedCSVParser.isSectionBasedFormat(csvData)) {
+    return sectionBasedParser.parseCSV(csvData);
+  }
+  return headerBasedParser.parseCSV(csvData);
+}
 
 // Helper function to check if student value is within tolerance
 function checkCorrectness(studentValue: number | null, expectedValue: number | null, tolerance: number): boolean | null {
@@ -398,7 +408,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      const { rows, title, tolerance1, tolerance2 } = csvParser.parseCSV(csvData);
+      const { rows, title, tolerance1, tolerance2 } = parseCSVAuto(csvData);
       set({ 
         rows, 
         title,
@@ -522,7 +532,7 @@ export const useCalculatorStore = create<CalculatorStore>((set, get) => ({
       fetch(calculator.csvFile)
         .then(response => response.text())
         .then(content => {
-          const { rows, title, tolerance1, tolerance2 } = csvParser.parseCSV(content);
+          const { rows, title, tolerance1, tolerance2 } = parseCSVAuto(content);
           set({ 
             rows, 
             title,
