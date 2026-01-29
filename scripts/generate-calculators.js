@@ -88,6 +88,7 @@ function extractSectionBasedMetadata(csvContent) {
   let warningTolerance = 0.05;
   let incorrectTolerance = 0.1;
   let trials = 2;
+  let isTemplate = false;
   
   // Parse parameter rows
   for (let i = paramStartIndex + 1; i < paramEndIndex; i++) {
@@ -123,6 +124,9 @@ function extractSectionBasedMetadata(csvContent) {
       case 'trials':
         trials = parseInt(value) || 2;
         break;
+      case 'template':
+        isTemplate = value.toLowerCase() === 'true';
+        break;
     }
   }
   
@@ -134,6 +138,7 @@ function extractSectionBasedMetadata(csvContent) {
     warningTolerance,
     incorrectTolerance,
     trials,
+    isTemplate,
     format: 'section-based'
   };
 }
@@ -254,6 +259,12 @@ function generateCalculatorConfigs() {
       const metadata = extractMetadataFromCSV(csvPath);
       
       if (metadata) {
+        // Skip template files
+        if (metadata.isTemplate) {
+          console.log(`Skipping template: ${file}`);
+          return;
+        }
+        
         // Generate ID from filename (handle both formats)
         let id = file
           .replace('_HeaderBased.csv', '')

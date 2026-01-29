@@ -1,25 +1,61 @@
 \Start Parameters,,,,,,,,
 Title,Experiment Title,,,,,,,
-Description,Generic lab template for testing section-based format,,,,,,,
+Description,Brief description of the lab,,,,,,,
 Icon,🧪,,,,,,,
 Warning Tolerance,0.05,,,,,,,
 Incorrect Tolerance,0.1,,,,,,,
 Trials,2,,,,,,,
+Template,true,,,,,,,
 \End Parameters,,,,,,,,
+,,,,,,,,
+=== TEMPLATE DOCUMENTATION ===,,,,,,,,
+,,,,,,,,
+PARAMETERS SECTION:,,,,,,,,
+"- Title: The name displayed in the calculator dropdown",,,,,,,,
+"- Description: Brief description shown in the calculator selector",,,,,,,,
+"- Icon: Emoji icon for the calculator (e.g., 🧪, ⚗️, 🌡️, 🧊, 💨)",,,,,,,,
+"- Warning Tolerance: Decimal (e.g., 0.05 = 5%) - values within this range show as 'close'",,,,,,,,
+"- Incorrect Tolerance: Decimal (e.g., 0.1 = 10%) - values beyond this are marked incorrect",,,,,,,,
+"- Trials: Number of trials (1 or 2) - determines column layout",,,,,,,,
+"- Template: Set to 'true' to exclude from calculator list (for templates only)",,,,,,,,
+,,,,,,,,
+ENTRY TYPES:,,,,,,,,
+"- Data: Student enters a numeric value (creates input box)",,,,,,,,
+"- Calculated: Formula-based value that students calculate and enter",,,,,,,,
+"- Choice: Dropdown selection from semicolon-separated options (e.g., A; B; C; D)",,,,,,,,
+"- Text: Free-form text entry (e.g., compound names, unknown identifiers)",,,,,,,,
+,,,,,,,,
+TABLE COLUMNS:,,,,,,,,
+"- Section: Groups rows under a header (e.g., 'Part 1: Data Collection')",,,,,,,,
+"- Subsection: Sub-grouping within a section (e.g., 'Data', 'Calculations')",,,,,,,,
+"- DataRef1/DataRef2: Cell reference for Trial 1/2 (e.g., =F5, =G5)",,,,,,,,
+"- Label: Description shown to the student",,,,,,,,
+"- Trial 1/Trial 2: Value or formula (use NA for single-trial cells)",,,,,,,,
+"- Unit: Unit of measurement (e.g., g, mL, mol, ˚C)",,,,,,,,
+"- Entry Type: One of Data, Calculated, Choice, or Text",,,,,,,,
+,,,,,,,,
+FORMULAS:,,,,,,,,
+"- Start with = sign (e.g., =F8-F5)",,,,,,,,
+"- Reference cells by their DataRef (e.g., F5, G5)",,,,,,,,
+"- Supported: +, -, *, /, ^, parentheses",,,,,,,,
+"- Use 10^(-F5) for exponents with cell references",,,,,,,,
+"- For averages, use (A+B+C)/3 instead of AVERAGE()",,,,,,,,
+"- Use NA in Trial 2 column for values calculated from both trials",,,,,,,,
+,,,,,,,,
+SECTIONS & SUBSECTIONS:,,,,,,,,
+"- To create a section header: Put name in Section column, leave other columns empty",,,,,,,,
+"- To create a subsection: Put name in Subsection column (e.g., 'Data', 'Calculations')",,,,,,,,
+"- Subsections help organize the 'Check Work' button groupings",,,,,,,,
+,,,,,,,,
+=== END DOCUMENTATION ===,,,,,,,,
+,,,,,,,,
 \Start Table,,,,,,,,
 Section,Subsection,DataRef1,DataRef2,Label,Trial 1,Trial 2,Unit,Entry Type
 Section 1,,,,,,,,
-,,=F14,=G14,Unknown used,A; B; C; D,A; B; C; D,,Choice
-,,=F15,=G15,Mass of empty flask + foil,120,120,g,Data
-,,=F16,=G16,Temperature of hot water,100,100,C,Data
-,,=F17,=G17,Pressure in lab,757,757,inHg,Data
-,,=F18,=G18,Mass of flask + foil + condensed unknown AFTER heating and cooling,130,130,g,Data
-,,=F19,=G19,Volume of flask,270,270,mL,Data
-Section 2,,,,,,,,
-,,=F21,=G21,Mass of unknown,=F18-F15,=G18-G15,g,Calculated
-,,=F22,=G22,Temperature,=F16+273.15,=G16+273.15,K,Calculated
-,,=F23,=G23,Volume of flask,=F19/1000,=G19/1000,L,Calculated
-,,=F24,=G24,Pressure,=F17/29.92,=G17/29.92,atm,Calculated
-,,=F25,=G25,Moles of unknown,=F24*F23/F22/0.0821,=G24*G23/G22/0.0821,mol,Calculated
-,,=F26,=G26,Molar mass of unknown,=F21/F25,=G21/G25,g/mol,Calculated
-,,=F27,=G27,Average molar mass,=(F26+G26)/2,NA,g/mol,Calculated
+,Data,,,,,,,
+,,=F5,=G5,Example data entry,100,100,g,Data
+,,=F6,=G6,Example choice entry,A; B; C; D,A; B; C; D,,Choice
+,,=F7,=G7,Example text entry,Sample Name,Sample Name,,Text
+,Calculations,,,,,,,
+,,=F9,=G9,Example calculated value,=F5*2,=G5*2,g,Calculated
+,,=F10,=G10,Example average (both trials),=(F9+G9)/2,NA,g,Calculated

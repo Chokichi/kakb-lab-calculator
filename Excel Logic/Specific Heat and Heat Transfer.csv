@@ -1,0 +1,39 @@
+﻿\Start Parameters,,,,,,
+Title,Specific Heat and Heat Transfer,,,,,
+Warning Tolerance,0.05,,,,,
+Incorrect Tolerance,0.1,,,,,
+Trials,1,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+\End Parameters,,,,,,
+\Start Table,,,,,,
+Section,Subsection,DataRef1,Label,Trial 1,Unit,Entry Type
+Part 1: Mixing Hot and Cold Water,,,,,,
+,Data,,,,,
+,,=E15,mass of the empty Styrofoam cup and lid,15,g,Data
+,,=E16,"mass of the cup, lid, and cool water",40,g,Data
+,,=E17,temperature of the cool water,22,C,Data
+,,=E18,temperature of the hot water,60,C,Data
+,,=E19,"mass of the cup, lid, and water mixture",80,g,Data
+,,=E20,measured final temperature of the water mixture,45,C,Data
+,Calculations,,,,,
+,,=E22,Mass of cold water,=E16-E15,g,Calculated
+,,=E23,Mass of hot water,=E19-E16,g,Calculated
+,,=E24,Calculated final temperature,=(E23/E22*E18+E17)/(E23/E22+1),C,Calculated
+,,=E25,Percentage error,=(E20-E24)/E24*100,%,Calculated
+Part 2: Determining the Specific Heat of the Metal,,,,,,
+,Data,,,,,
+,,=E28,unknown number of the metal,10,,Text
+,,=E29,mass of the empty extra-large test tube,40,g,Data
+,,=E30,mass of the extra-large test tube and metal,90,g,Data
+,,=E31,initial temperature of the metal,100,C,Data
+,,=E32,mass of the styrofoam cup and lid,10,g,Data
+,,=E33,"mass of the styrofoam cup, lid, cold water",60,g,Data
+,,=E34,initial temperature of the cold water,22,C,Data
+,,=E35,final temperature of the metal and water mixture,35.7,C,Data
+,Calculations,,,,,
+,,=E37,mass of metal used,=E30-E29,g,Calculated
+,,=E38,mass of water used,=E33-E32,g,Calculated
+,,=E39,calculated specific heat of the unknown metal,=-E38*4.184*(E35-E34)/E37/(E35-E31),J/gC,Calculated
