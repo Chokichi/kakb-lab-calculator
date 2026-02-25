@@ -1,0 +1,28 @@
+﻿\Start Parameters,,,,,,
+Title,Emprical Formula of a Compound,,,,,
+Warning Tolerance,0.01,,,,,
+Incorrect Tolerance,0.05,,,,,
+Trials,1,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+\End Parameters,,,,,,
+\Start Table,,,,,,
+Section,Subsection,DataRef1,Label,Trial 1,Unit,Entry Type
+Results,,,,,,
+,Data,,,,,
+,,,,,,
+,,=E16,Mass of crucible and cover,1,g,Data
+,,=E17,"Mass of crucible, cover, and magnesium",1.5,g,Data
+,,=E18,"Mass of crucible, cover, and magnesium oxide after 1st heating",1.4,g,Data
+,,=E19,"Mass of crucible, cover, and magnesium oxide after 2nd heating",1.3,g,Data
+,,=E20,"Mass of crucible, cover, and magnesium oxide after 3rd heating (if necessary)",1,g,Data
+,Calculations,,,,,
+,,=E22,Mass of magnesium,=E17-E16,g,Calculated
+,,=E23,Mass of magnesium oxide formed,=E19-E16,g,Calculated
+,,=E24,Calculate the mass of oxygen in the magnesium oxide,=E23-E22,g,Calculated
+,,=E25,Moles of Mg,=E22/24.305,mol,Calculated
+,,=E26,Moles of O,=E24/15.999,mol,Calculated
+,,=E27,Number of Mg in empirical formula,1,,text
+,,=E28,Number of O in empirical formula,2,,text
